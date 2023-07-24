@@ -4,12 +4,15 @@
   <div class="box">
     <ul>
       <item-list
-        v-for="item in items"
-        :key="item.title"
+        v-for="item in showTasks"
+        :key="item.id"
         :item="item"
       ></item-list>
     </ul>
-    <the-footer :count="items.length"></the-footer>
+    <the-footer
+      :count="showTasks.length"
+      @change-filter="filterChanged"
+    ></the-footer>
   </div>
 </template>
 
@@ -30,21 +33,52 @@ export default defineComponent({
   },
   data() {
     return {
-      items: [
+      tasks: [
         {
+          id: 1,
           title: "hii",
           isChecked: false,
         },
         {
+          id: 2,
           title: "hello",
           isChecked: true,
         },
       ],
+      showTasks: [{}],
+      completedTasks: [{}],
+      activeTasks: [{}],
+      filter: "all",
     };
+  },
+  beforeMount() {
+    this.showTasks = this.tasks;
+    this.updateTasks();
   },
   methods: {
     addItem(title: string) {
-      this.items.push({ title: title, isChecked: false });
+      this.tasks.push({ id: Math.random(), title: title, isChecked: false });
+      this.updateTasks();
+    },
+    updateTasks() {
+      this.completedTasks = this.tasks.filter((t) => {
+        return t.isChecked == true;
+      });
+      this.activeTasks = this.tasks.filter((t) => {
+        return t.isChecked == false;
+      });
+    },
+    filterChanged(filter: string) {
+      this.filter = filter;
+      if (this.filter == "all") {
+        this.showTasks = this.tasks;
+      }
+      if (this.filter == "active") {
+        this.showTasks = this.activeTasks;
+      }
+      if (this.filter == "completed") {
+        this.showTasks = this.completedTasks;
+      }
     },
   },
 });

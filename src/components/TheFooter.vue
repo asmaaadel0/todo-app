@@ -4,7 +4,7 @@
     <ul>
       <li>
         <button
-          @click="changeClicked('all')"
+          @click="filterChange('all')"
           :class="clicked == 'all' ? 'clicked' : ''"
         >
           All
@@ -12,7 +12,7 @@
       </li>
       <li>
         <button
-          @click="changeClicked('active')"
+          @click="filterChange('active')"
           :class="clicked == 'active' ? 'clicked' : ''"
         >
           Active
@@ -20,7 +20,7 @@
       </li>
       <li>
         <button
-          @click="changeClicked('completed')"
+          @click="filterChange('completed')"
           :class="clicked == 'completed' ? 'clicked' : ''"
         >
           Completed
@@ -32,6 +32,7 @@
 
 <script lang="ts">
 export default {
+  emits: ["change-filter"],
   data() {
     return {
       clicked: "all",
@@ -45,8 +46,9 @@ export default {
     },
   },
   methods: {
-    changeClicked(clickedVal: string) {
+    filterChange(clickedVal: string) {
       this.clicked = clickedVal;
+      this.$emit("change-filter", this.clicked);
     },
   },
 };
