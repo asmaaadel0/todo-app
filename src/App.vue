@@ -1,15 +1,17 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+  <the-header></the-header>
+  <input-field></input-field>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import HelloWorld from "./components/HelloWorld.vue";
+import InputField from "./components/InputField.vue";
+import TheHeader from "./components/TheHeader.vue";
 
 @Options({
   components: {
-    HelloWorld,
+    TheHeader,
+    InputField,
   },
 })
 export default class App extends Vue {}
