@@ -1,18 +1,21 @@
 <template>
-  <the-header></the-header>
-  <input-field @add="addTask"></input-field>
-  <div class="box">
-    <ul>
-      <task-list
-        v-for="task in showTasks"
-        :key="task.id"
-        :task="task"
-      ></task-list>
-    </ul>
-    <the-footer
-      :count="showTasks.length"
-      @change-filter="filterChanged"
-    ></the-footer>
+  <div>
+    <the-header></the-header>
+    <input-field @add="addTask"></input-field>
+    <div class="box">
+      <ul>
+        <task-list
+          v-for="task in showTasks"
+          :key="task.id"
+          :task="task"
+          @delete="deleteTask"
+        ></task-list>
+      </ul>
+      <the-footer
+        :count="showTasks.length"
+        @change-filter="filterChanged"
+      ></the-footer>
+    </div>
   </div>
 </template>
 
@@ -67,6 +70,15 @@ export default defineComponent({
       this.activeTasks = this.tasks.filter((t) => {
         return t.isChecked == false;
       });
+    },
+    deleteTask(id: number) {
+      this.tasks.splice(id, 1);
+      this.updateTasks();
+    },
+    checkTask(id: number) {
+      const p = this.tasks.find((task) => task.id === id);
+      if (p) p.isChecked = !p.isChecked;
+      this.updateTasks();
     },
     filterChanged(filter: string) {
       this.filter = filter;

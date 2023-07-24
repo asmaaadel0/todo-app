@@ -30,7 +30,7 @@
   </footer>
 </template>
 
-<script lang="ts">
+<script>
 export default {
   emits: ["change-filter"],
   data() {
@@ -46,7 +46,7 @@ export default {
     },
   },
   methods: {
-    filterChange(clickedVal: string) {
+    filterChange(clickedVal) {
       this.clicked = clickedVal;
       this.$emit("change-filter", this.clicked);
     },

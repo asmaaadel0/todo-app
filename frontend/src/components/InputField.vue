@@ -1,11 +1,13 @@
 <template>
-  <form @submit.prevent="submitForm">
-    <input type="title" name="title" id="title" v-model="title" />
-  </form>
-  <div v-if="error" class="error">Please enter the title.</div>
+  <div>
+    <form @submit.prevent="submitForm">
+      <input type="title" name="title" id="title" v-model="title" />
+    </form>
+    <div v-if="error" class="error">Please enter the title.</div>
+  </div>
 </template>
 
-<script lang="ts">
+<script>
 export default {
   data() {
     return {
