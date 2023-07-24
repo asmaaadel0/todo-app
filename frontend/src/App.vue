@@ -5,7 +5,7 @@
     <div class="box" v-if="tasks.length != 0">
       <ul>
         <task-list
-          v-for="task in tasks"
+          v-for="task in showTasks"
           :key="task.id"
           :task="task"
           @delete="deleteTask"
@@ -13,7 +13,7 @@
         ></task-list>
       </ul>
       <the-footer
-        :count="tasks.length"
+        :count="showTasks.length"
         @change-filter="filterChanged"
       ></the-footer>
     </div>
@@ -50,8 +50,6 @@ export default defineComponent({
   },
   beforeMount() {
     this.getTasks();
-    this.showTasks = this.tasks;
-    this.updateTasks();
   },
   methods: {
     async getTasks() {
@@ -64,10 +62,12 @@ export default defineComponent({
         this.tasks = await response.json();
         if (this.tasks == null) {
           this.tasks = [];
+          return;
         }
+        this.showTasks = this.tasks;
+        this.updateTasks();
       } catch (error) {
         this.error = "Error fetching tasks:" + error.message;
-        console.error("Error fetching data:", error.message);
       }
     },
 
