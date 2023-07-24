@@ -22,7 +22,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 import InputField from "./components/InputField.vue";
 import TheHeader from "./components/TheHeader.vue";
@@ -71,7 +71,7 @@ export default defineComponent({
       }
     },
 
-    async addTask(title) {
+    async addTask(title: string) {
       const response = await fetch(this.baseurl + "/tasks", {
         method: "POST",
         body: JSON.stringify({
@@ -85,7 +85,7 @@ export default defineComponent({
       this.getTasks();
     },
 
-    async deleteTask(id) {
+    async deleteTask(id: number) {
       try {
         const response = await fetch(this.baseurl + `/tasks/${id}`, {
           method: "DELETE",
@@ -100,7 +100,7 @@ export default defineComponent({
       }
     },
 
-    async UpdateTask(id, title, isChecked) {
+    async UpdateTask(id: number, title: string, isChecked: boolean) {
       const updatedTask = { title: title, isChecked: isChecked };
       try {
         const response = await fetch(this.baseurl + `/tasks/${id}`, {
@@ -120,7 +120,7 @@ export default defineComponent({
       }
     },
 
-    filterChanged(filter) {
+    filterChanged(filter: string) {
       this.filter = filter;
       if (this.filter == "all") {
         this.showTasks = this.tasks;
