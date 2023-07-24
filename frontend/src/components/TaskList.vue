@@ -55,7 +55,7 @@ export default {
       this.$emit("delete", this.task.id);
     },
     checkTask() {
-      this.$emit("check", this.task.id);
+      this.$emit("update", this.task.id, this.task.title, !this.task.isChecked);
     },
   },
 };

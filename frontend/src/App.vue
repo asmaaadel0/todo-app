@@ -2,24 +2,27 @@
   <div>
     <the-header></the-header>
     <input-field @add="addTask"></input-field>
-    <div class="box">
+    <div class="box" v-if="tasks.length != 0">
       <ul>
         <task-list
-          v-for="task in showTasks"
+          v-for="task in tasks"
           :key="task.id"
           :task="task"
           @delete="deleteTask"
+          @update="UpdateTask"
         ></task-list>
       </ul>
       <the-footer
-        :count="showTasks.length"
+        :count="tasks.length"
         @change-filter="filterChanged"
       ></the-footer>
     </div>
+    <div v-else>No Tasks yet.</div>
+    <div v-if="error != ''" class="error">{{ error }}</div>
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent } from "vue";
 import InputField from "./components/InputField.vue";
 import TheHeader from "./components/TheHeader.vue";
@@ -36,51 +39,88 @@ export default defineComponent({
   },
   data() {
     return {
-      tasks: [
-        {
-          id: 1,
-          title: "hii",
-          isChecked: false,
-        },
-        {
-          id: 2,
-          title: "hello",
-          isChecked: true,
-        },
-      ],
+      tasks: [{}],
       showTasks: [{}],
       completedTasks: [{}],
       activeTasks: [{}],
       filter: "all",
+      error: "",
+      baseurl: "http://localhost:3000",
     };
   },
   beforeMount() {
+    this.getTasks();
     this.showTasks = this.tasks;
     this.updateTasks();
   },
   methods: {
-    addTask(title: string) {
-      this.tasks.push({ id: Math.random(), title: title, isChecked: false });
-      this.updateTasks();
+    async getTasks() {
+      try {
+        const response = await fetch(this.baseurl + "/tasks");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        this.tasks = await response.json();
+        if (this.tasks == null) {
+          this.tasks = [];
+        }
+      } catch (error) {
+        this.error = "Error fetching tasks:" + error.message;
+        console.error("Error fetching data:", error.message);
+      }
     },
-    updateTasks() {
-      this.completedTasks = this.tasks.filter((t) => {
-        return t.isChecked == true;
+
+    async addTask(title) {
+      const response = await fetch(this.baseurl + "/tasks", {
+        method: "POST",
+        body: JSON.stringify({
+          title: title,
+          isChecked: false,
+        }),
       });
-      this.activeTasks = this.tasks.filter((t) => {
-        return t.isChecked == false;
-      });
+      if (response.status != 200) {
+        this.error = "Error adding task";
+      }
+      this.getTasks();
     },
-    deleteTask(id: number) {
-      this.tasks.splice(id, 1);
-      this.updateTasks();
+
+    async deleteTask(id) {
+      try {
+        const response = await fetch(this.baseurl + `/tasks/${id}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        this.getTasks();
+      } catch (error) {
+        this.error = "Error deleting task:" + error.message;
+      }
     },
-    checkTask(id: number) {
-      const p = this.tasks.find((task) => task.id === id);
-      if (p) p.isChecked = !p.isChecked;
-      this.updateTasks();
+
+    async UpdateTask(id, title, isChecked) {
+      const updatedTask = { title: title, isChecked: isChecked };
+      try {
+        const response = await fetch(this.baseurl + `/tasks/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "PUT",
+          body: JSON.stringify(updatedTask),
+        });
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        this.getTasks();
+      } catch (error) {
+        this.error = "Error updating task:" + error.message;
+      }
     },
-    filterChanged(filter: string) {
+
+    filterChanged(filter) {
       this.filter = filter;
       if (this.filter == "all") {
         this.showTasks = this.tasks;
@@ -91,6 +131,15 @@ export default defineComponent({
       if (this.filter == "completed") {
         this.showTasks = this.completedTasks;
       }
+    },
+
+    updateTasks() {
+      this.completedTasks = this.tasks.filter((t) => {
+        return t.isChecked == true;
+      });
+      this.activeTasks = this.tasks.filter((t) => {
+        return t.isChecked == false;
+      });
     },
   },
 });
@@ -111,5 +160,11 @@ ul {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.error {
+  color: red;
+  margin-top: 30px;
+  font-size: 1rem;
+  font-weight: bold;
 }
 </style>
