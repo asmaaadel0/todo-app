@@ -20,10 +20,10 @@ func (app *App) Run() error {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/tasks", getTasks).Methods("GET")
-	r.HandleFunc("/tasks", addTask).Methods("POST")
-	r.HandleFunc("/tasks/{id}", deleteTask).Methods("DELETE")
-	r.HandleFunc("/tasks/{id}", updateTask).Methods("PUT")
+	r.HandleFunc("/tasks", GetTasks).Methods("GET")
+	r.HandleFunc("/tasks", AddTask).Methods("POST")
+	r.HandleFunc("/tasks/{id}", DeleteTask).Methods("DELETE")
+	r.HandleFunc("/tasks/{id}", UpdateTask).Methods("PUT")
 
 	c := cors.Default()
 

@@ -21,14 +21,14 @@ type Task struct {
 
 var tasks []Task
 
-// getTasks to retrieve tasks
-func getTasks(w http.ResponseWriter, r *http.Request) {
+// GetTasks to retrieve tasks
+func GetTasks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(tasks)
 }
 
-// addTask to add new task
-func addTask(w http.ResponseWriter, r *http.Request) {
+// AddTask to add new task
+func AddTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var newTask Task
@@ -44,8 +44,8 @@ func addTask(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newTask)
 }
 
-// deleteTask to delete task
-func deleteTask(w http.ResponseWriter, r *http.Request) {
+// DeleteTask to delete task
+func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	vars := mux.Vars(r)
@@ -75,8 +75,8 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"message": "Task deleted successfully"})
 }
 
-// updateTask to update task
-func updateTask(w http.ResponseWriter, r *http.Request) {
+// UpdateTask to update task
+func UpdateTask(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("asssssssssssss")
 	w.Header().Set("Content-Type", "application/json")
 
