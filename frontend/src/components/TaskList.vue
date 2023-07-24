@@ -1,7 +1,10 @@
 <template>
   <div class="item-box">
     <div>
-      <label>{{ task.title }}</label>
+      <form v-if="edit" @submit.prevent="updateTask">
+        <input v-model="inputField" />
+      </form>
+      <label @dblclick="toggleEdit()" v-else>{{ task.title }}</label>
     </div>
     <div>
       <svg
@@ -26,7 +29,7 @@
         class="bi bi-check2-square"
         viewBox="0 0 16 16"
         :class="task.isChecked ? 'green' : ''"
-        @click="checkTask"
+        @click="updateTask"
       >
         <path
           d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5H3z"
@@ -50,12 +53,22 @@ export default {
       }),
     },
   },
+  data() {
+    return {
+      inputField: this.task.title,
+      edit: false,
+    };
+  },
   methods: {
     deleteTask() {
       this.$emit("delete", this.task.id);
     },
-    checkTask() {
-      this.$emit("update", this.task.id, this.task.title, !this.task.isChecked);
+    updateTask() {
+      this.$emit("update", this.task.id, this.inputField, !this.task.isChecked);
+      this.toggleEdit();
+    },
+    toggleEdit() {
+      this.edit = !this.edit;
     },
   },
 };
@@ -76,7 +89,20 @@ label {
   line-height: 3;
   transition: color 0.4s;
 }
-
+input {
+  position: relative;
+  margin: 0;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: inherit;
+  line-height: 1.4em;
+  border: 0;
+  color: inherit;
+  padding: 6px;
+  border: 1px solid #999;
+  box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+}
 svg {
   padding: 0px;
   margin-left: 3rem;
