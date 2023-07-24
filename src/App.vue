@@ -1,20 +1,35 @@
 <template>
   <the-header></the-header>
-  <input-field></input-field>
+  <input-field @add="addItem"></input-field>
+  <ul v-for="item in items" :key="item">
+    <item-list :item="item"></item-list>
+  </ul>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { defineComponent } from "vue";
 import InputField from "./components/InputField.vue";
 import TheHeader from "./components/TheHeader.vue";
+import ItemList from "./components/ItemList.vue";
 
-@Options({
+export default defineComponent({
+  name: "App",
   components: {
     TheHeader,
     InputField,
+    ItemList,
   },
-})
-export default class App extends Vue {}
+  data() {
+    return {
+      items: ["test", "fix"],
+    };
+  },
+  methods: {
+    addItem(title: string) {
+      this.items.push(title);
+    },
+  },
+});
 </script>
 
 <style>

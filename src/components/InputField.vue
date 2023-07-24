@@ -13,6 +13,7 @@ export default {
       error: false,
     };
   },
+  emits: ["add"],
   methods: {
     submitForm() {
       if (this.title == "") {
@@ -21,6 +22,7 @@ export default {
       }
       this.error = false;
       this.$emit("add", this.title);
+      this.title = "";
     },
   },
 };
