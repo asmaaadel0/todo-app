@@ -11,21 +11,24 @@ import (
 
 // Task to store tasks
 type Task struct {
-	Id        int    `json:"id"`
-	Title     string `json:"title"`
-	IsChecked bool   `json:"isChecked"`
+	// Id uniqe for each task
+	Id int `json:"id"`
+	// Title descripe each task
+	Title string `json:"title"`
+	// IsChecked if it's complete or not
+	IsChecked bool `json:"isChecked"`
 }
 
 var tasks []Task
 
-// GetTasks to retrieve tasks
-func GetTasks(w http.ResponseWriter, r *http.Request) {
+// getTasks to retrieve tasks
+func getTasks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(tasks)
 }
 
-// AddTask to add new task
-func AddTask(w http.ResponseWriter, r *http.Request) {
+// addTask to add new task
+func addTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var newTask Task
@@ -41,15 +44,14 @@ func AddTask(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newTask)
 }
 
-// DeleteTask to delete task
-func DeleteTask(w http.ResponseWriter, r *http.Request) {
+// deleteTask to delete task
+func deleteTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	vars := mux.Vars(r)
 	taskIDStr := vars["id"]
 	taskID, err := strconv.Atoi(taskIDStr)
 
-	fmt.Println(taskID)
 	if err != nil {
 		http.Error(w, "Invalid task ID", http.StatusBadRequest)
 		return
@@ -73,8 +75,8 @@ func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"message": "Task deleted successfully"})
 }
 
-// UpdateTask to update task
-func UpdateTask(w http.ResponseWriter, r *http.Request) {
+// updateTask to update task
+func updateTask(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("asssssssssssss")
 	w.Header().Set("Content-Type", "application/json")
 
