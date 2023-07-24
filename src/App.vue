@@ -1,13 +1,13 @@
 <template>
   <the-header></the-header>
-  <input-field @add="addItem"></input-field>
+  <input-field @add="addTask"></input-field>
   <div class="box">
     <ul>
-      <item-list
-        v-for="item in showTasks"
-        :key="item.id"
-        :item="item"
-      ></item-list>
+      <task-list
+        v-for="task in showTasks"
+        :key="task.id"
+        :task="task"
+      ></task-list>
     </ul>
     <the-footer
       :count="showTasks.length"
@@ -20,7 +20,7 @@
 import { defineComponent } from "vue";
 import InputField from "./components/InputField.vue";
 import TheHeader from "./components/TheHeader.vue";
-import ItemList from "./components/ItemList.vue";
+import TaskList from "./components/TaskList.vue";
 import TheFooter from "./components/TheFooter.vue";
 
 export default defineComponent({
@@ -28,7 +28,7 @@ export default defineComponent({
   components: {
     TheHeader,
     InputField,
-    ItemList,
+    TaskList,
     TheFooter,
   },
   data() {
@@ -56,7 +56,7 @@ export default defineComponent({
     this.updateTasks();
   },
   methods: {
-    addItem(title: string) {
+    addTask(title: string) {
       this.tasks.push({ id: Math.random(), title: title, isChecked: false });
       this.updateTasks();
     },
