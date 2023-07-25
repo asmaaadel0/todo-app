@@ -24,10 +24,12 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import InputField from "./components/InputField.vue";
+
 import TheHeader from "./components/TheHeader.vue";
+import InputField from "./components/InputField.vue";
 import TaskList from "./components/TaskList.vue";
 import TheFooter from "./components/TheFooter.vue";
+
 declare interface Tasks {
   id: number;
   title: string;
@@ -71,6 +73,7 @@ export default defineComponent({
         }
         this.showTasks = this.tasks;
         this.updateTasks();
+        this.error = "";
       } catch (error) {
         if (error instanceof Error) {
           this.error = "Error fetching tasks:" + error.message;
@@ -81,17 +84,21 @@ export default defineComponent({
     },
 
     async addTask(title: string) {
+      const newTask = {
+        title: title,
+        completed: false,
+      };
       const response = await fetch(this.baseurl + "/tasks", {
         method: "POST",
-        body: JSON.stringify({
-          title: title,
-          completed: false,
-        }),
+        body: JSON.stringify(newTask),
       });
-      if (response.status != 200) {
+      this.error = "";
+
+      if (response.status != 201) {
         this.error = "Error adding task";
       }
-      this.getTasks();
+
+      this.tasks.push({ id: 10000, title: title, completed: false });
     },
 
     async deleteTask(id: number) {

@@ -1,37 +1,49 @@
 package internal
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/rs/cors"
 )
 
 type App struct {
-	port int
+	db *sql.DB
 }
 
-func NewApp(port int) *App {
-	return &App{port: port}
+// NewApp to create and initialize app
+func NewApp() (*App, error) {
+	database, err := sql.Open("sqlite3", "database.db")
+	if err != nil {
+		return nil, err
+	}
+
+	return &App{db: database}, nil
 }
 
 func (app *App) Run() error {
 
-	r := mux.NewRouter()
+	router := gin.New()
 
-	r.HandleFunc("/tasks", GetTasks).Methods("GET")
-	r.HandleFunc("/tasks", AddTask).Methods("POST")
-	r.HandleFunc("/tasks/{id}", DeleteTask).Methods("DELETE")
-	r.HandleFunc("/tasks/{id}", UpdateTask).Methods("PUT")
+	// err := app.createTable()
+	// if err != nil {
+	// 	return err
+	// }
+
+	router.GET("/tasks", app.GetTasks)
+	router.POST("/tasks", app.AddTask)
+	router.DELETE("/tasks/:id", app.DeleteTask)
+	router.PUT("/tasks", app.UpdateTask)
 
 	c := cors.Default()
 
-	handler := c.Handler(r)
+	handler := c.Handler(router)
 	http.Handle("/", handler)
 
-	portListner := fmt.Sprintf(":%d", app.port)
-	fmt.Println("Server started on port", portListner)
-	err := http.ListenAndServe(portListner, nil)
+	fmt.Println("Server started on port: 3000")
+	err := http.ListenAndServe(":3000", nil)
 	return err
 }

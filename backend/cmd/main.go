@@ -8,9 +8,12 @@ import (
 
 func main() {
 
-	app := internal.NewApp(3000)
+	app, err := internal.NewApp()
+	if err != nil {
+		log.Fatalf("Error:%s", err)
+	}
 
-	err := app.Run()
+	err = app.Run()
 	if err != nil {
 		log.Fatalf("Error:%s", err)
 	}

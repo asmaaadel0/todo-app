@@ -1,12 +1,10 @@
 package internal
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 // Task to store tasks
@@ -19,97 +17,47 @@ type Task struct {
 	Completed bool `json:"completed"`
 }
 
-var tasks []Task
-
 // GetTasks to retrieve tasks
-func GetTasks(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(tasks)
+func (app *App) GetTasks(context *gin.Context) {
+
+	context.Writer.Header().Set("Content-Type", "application/json")
+	context.Next()
+	tasks := app.getTasks()
+	context.JSON(http.StatusAccepted, &tasks)
 }
 
 // AddTask to add new task
-func AddTask(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+func (app *App) AddTask(context *gin.Context) {
 
 	var newTask Task
-	err := json.NewDecoder(r.Body).Decode(&newTask)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		fmt.Println(err)
-		return
+	if err := context.BindJSON(&newTask); err != nil {
+		context.JSON(http.StatusBadRequest, err)
 	}
 
-	newTask.Id = len(tasks)
-	tasks = append(tasks, newTask)
-	json.NewEncoder(w).Encode(newTask)
+	app.addTask(newTask.Title, newTask.Completed)
+	context.JSON(http.StatusCreated, newTask)
 }
 
 // DeleteTask to delete task
-func DeleteTask(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+func (app *App) DeleteTask(context *gin.Context) {
 
-	vars := mux.Vars(r)
-	taskIDStr := vars["id"]
-	taskID, err := strconv.Atoi(taskIDStr)
-
+	idStr := context.Param("id")
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid task ID", http.StatusBadRequest)
+		context.JSON(http.StatusInternalServerError, err)
 		return
 	}
-
-	var taskIndex int = -1
-	for i, task := range tasks {
-		if task.Id == taskID {
-			taskIndex = i
-			break
-		}
-	}
-
-	if taskIndex == -1 {
-		http.Error(w, "Task not found", http.StatusNotFound)
-		return
-	}
-
-	tasks = append(tasks[:taskIndex], tasks[taskIndex+1:]...)
-
-	json.NewEncoder(w).Encode(map[string]string{"message": "Task deleted successfully"})
+	app.deleteTask(id)
+	context.JSON(http.StatusOK, id)
 }
 
-// UpdateTask to update task
-func UpdateTask(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+// UpdateTask to add new task
+func (app *App) UpdateTask(context *gin.Context) {
 
-	var updatedTask Task
-	err := json.NewDecoder(r.Body).Decode(&updatedTask)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+	var updateTask Task
+	if err := context.BindJSON(&updateTask); err != nil {
+		context.JSON(http.StatusBadRequest, err)
 	}
-
-	vars := mux.Vars(r)
-	taskIDStr := vars["id"]
-	taskID, err := strconv.Atoi(taskIDStr)
-	fmt.Println(taskID)
-	if err != nil {
-		http.Error(w, "Invalid task ID", http.StatusBadRequest)
-		return
-	}
-
-	var taskToUpdate *Task
-	for i := range tasks {
-		if tasks[i].Id == taskID {
-			taskToUpdate = &tasks[i]
-			break
-		}
-	}
-
-	if taskToUpdate == nil {
-		http.Error(w, "Task not found", http.StatusNotFound)
-		return
-	}
-
-	taskToUpdate.Title = updatedTask.Title
-	taskToUpdate.Completed = updatedTask.Completed
-
-	json.NewEncoder(w).Encode(taskToUpdate)
+	app.updateTask(updateTask)
+	context.JSON(http.StatusCreated, updateTask)
 }
