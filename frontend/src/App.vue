@@ -31,7 +31,7 @@ import TheFooter from "./components/TheFooter.vue";
 declare interface Tasks {
   id: number;
   title: string;
-  isChecked: boolean;
+  completed: boolean;
 }
 export default defineComponent({
   name: "App",
@@ -81,7 +81,7 @@ export default defineComponent({
         method: "POST",
         body: JSON.stringify({
           title: title,
-          isChecked: false,
+          completed: false,
         }),
       });
       if (response.status != 200) {
@@ -105,8 +105,8 @@ export default defineComponent({
       }
     },
 
-    async UpdateTask(id: number, title: string, isChecked: boolean) {
-      const updatedTask = { title: title, isChecked: isChecked };
+    async UpdateTask(id: number, title: string, completed: boolean) {
+      const updatedTask = { title: title, completed: completed };
       try {
         const response = await fetch(this.baseurl + `/tasks/${id}`, {
           headers: {
@@ -140,10 +140,10 @@ export default defineComponent({
 
     updateTasks() {
       this.completedTasks = this.tasks.filter((t) => {
-        return t.isChecked == true;
+        return t.completed == true;
       });
       this.activeTasks = this.tasks.filter((t) => {
-        return t.isChecked == false;
+        return t.completed == false;
       });
     },
   },

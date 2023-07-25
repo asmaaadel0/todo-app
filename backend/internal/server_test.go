@@ -43,7 +43,7 @@ func TestAddTask(t *testing.T) {
 		newTask := Task{
 			Id:        1,
 			Title:     "New Task",
-			IsChecked: false,
+			Completed: false,
 		}
 		newTaskJSON, err := json.Marshal(newTask)
 		if err != nil {

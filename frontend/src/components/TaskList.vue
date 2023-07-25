@@ -28,7 +28,7 @@
         fill="currentColor"
         class="bi bi-check2-square"
         viewBox="0 0 16 16"
-        :class="task.isChecked ? 'green' : ''"
+        :class="task.completed ? 'green' : ''"
         @click="updateTask"
       >
         <path
@@ -49,7 +49,7 @@ export default {
       required: true,
       default: () => ({
         title: "task",
-        isChecked: false,
+        completed: false,
       }),
     },
   },
@@ -64,7 +64,7 @@ export default {
       this.$emit("delete", this.task.id);
     },
     updateTask() {
-      this.$emit("update", this.task.id, this.inputField, !this.task.isChecked);
+      this.$emit("update", this.task.id, this.inputField, !this.task.completed);
       this.toggleEdit();
     },
     toggleEdit() {

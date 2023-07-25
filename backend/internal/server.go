@@ -15,8 +15,8 @@ type Task struct {
 	Id int `json:"id"`
 	// Title descripe each task
 	Title string `json:"title"`
-	// IsChecked if it's complete or not
-	IsChecked bool `json:"isChecked"`
+	// Completed if it's complete or not
+	Completed bool `json:"completed"`
 }
 
 var tasks []Task
@@ -77,7 +77,6 @@ func DeleteTask(w http.ResponseWriter, r *http.Request) {
 
 // UpdateTask to update task
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("asssssssssssss")
 	w.Header().Set("Content-Type", "application/json")
 
 	var updatedTask Task
@@ -110,7 +109,7 @@ func UpdateTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	taskToUpdate.Title = updatedTask.Title
-	taskToUpdate.IsChecked = updatedTask.IsChecked
+	taskToUpdate.Completed = updatedTask.Completed
 
 	json.NewEncoder(w).Encode(taskToUpdate)
 }
