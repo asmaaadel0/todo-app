@@ -31,11 +31,13 @@
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   emits: ["change-filter"],
   data() {
     return {
-      clicked: "all",
+      clicked: "all" as string,
     };
   },
   props: {
@@ -51,7 +53,7 @@ export default {
       this.$emit("change-filter", this.clicked);
     },
   },
-};
+});
 </script>
 
 <style scoped>

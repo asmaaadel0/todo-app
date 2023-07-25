@@ -72,7 +72,11 @@ export default defineComponent({
         this.showTasks = this.tasks;
         this.updateTasks();
       } catch (error) {
-        this.error = "Error fetching tasks:" + error.message;
+        if (error instanceof Error) {
+          this.error = "Error fetching tasks:" + error.message;
+        } else {
+          console.log("Unexpected error", error);
+        }
       }
     },
 
@@ -101,7 +105,11 @@ export default defineComponent({
         }
         this.getTasks();
       } catch (error) {
-        this.error = "Error deleting task:" + error.message;
+        if (error instanceof Error) {
+          this.error = "Error deleting task:" + error.message;
+        } else {
+          console.log("Unexpected error", error);
+        }
       }
     },
 
@@ -121,7 +129,11 @@ export default defineComponent({
         }
         this.getTasks();
       } catch (error) {
-        this.error = "Error updating task:" + error.message;
+        if (error instanceof Error) {
+          this.error = "Error updating task:" + error.message;
+        } else {
+          console.log("Unexpected error", error);
+        }
       }
     },
 

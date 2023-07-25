@@ -42,7 +42,9 @@
   </div>
 </template>
 <script lang="ts">
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   props: {
     task: {
       type: Object,
@@ -55,8 +57,8 @@ export default {
   },
   data() {
     return {
-      inputField: this.task.title,
-      edit: false,
+      inputField: this.task.title as string,
+      edit: false as boolean,
     };
   },
   methods: {
@@ -71,7 +73,7 @@ export default {
       this.edit = !this.edit;
     },
   },
-};
+});
 </script>
 
 <style scoped>

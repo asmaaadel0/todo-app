@@ -8,11 +8,12 @@
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   data() {
     return {
-      title: "",
-      error: false,
+      title: "" as string,
+      error: false as boolean,
     };
   },
   emits: ["add"],
@@ -27,7 +28,7 @@ export default {
       this.title = "";
     },
   },
-};
+});
 </script>
 
 <style scoped>
