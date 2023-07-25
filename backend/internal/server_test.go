@@ -49,7 +49,7 @@ func TestAddTask(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		req, err := http.NewRequest("POST", "/add-task", bytes.NewBuffer(newTaskJSON))
+		req, err := http.NewRequest("POST", "/tasks", bytes.NewBuffer(newTaskJSON))
 		if err != nil {
 			t.Fatal(err)
 		}

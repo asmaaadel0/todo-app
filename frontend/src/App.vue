@@ -28,9 +28,14 @@ import InputField from "./components/InputField.vue";
 import TheHeader from "./components/TheHeader.vue";
 import TaskList from "./components/TaskList.vue";
 import TheFooter from "./components/TheFooter.vue";
-
+declare interface Tasks {
+  id: number;
+  title: string;
+  isChecked: boolean;
+}
 export default defineComponent({
   name: "App",
+
   components: {
     TheHeader,
     InputField,
@@ -39,13 +44,13 @@ export default defineComponent({
   },
   data() {
     return {
-      tasks: [{}],
-      showTasks: [{}],
-      completedTasks: [{}],
-      activeTasks: [{}],
-      filter: "all",
-      error: "",
-      baseurl: "http://localhost:3000",
+      tasks: [] as Tasks[],
+      showTasks: [] as Tasks[],
+      completedTasks: [] as Tasks[],
+      activeTasks: [] as Tasks[],
+      filter: "all" as string,
+      error: "" as string,
+      baseurl: "http://localhost:3000" as string,
     };
   },
   beforeMount() {
