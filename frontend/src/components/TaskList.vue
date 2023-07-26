@@ -29,7 +29,7 @@
         class="bi bi-check2-square"
         viewBox="0 0 16 16"
         :class="task.completed ? 'green' : ''"
-        @click="updateTask"
+        @click="toggleComplete"
       >
         <path
           d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5H3z"
@@ -58,6 +58,7 @@ export default defineComponent({
   data() {
     return {
       inputField: this.task.title as string,
+      inputComplete: this.task.completed as boolean,
       edit: false as boolean,
     };
   },
@@ -66,8 +67,12 @@ export default defineComponent({
       this.$emit("delete", this.task.id);
     },
     updateTask() {
-      this.$emit("update", this.task.id, this.inputField, !this.task.completed);
-      this.toggleEdit();
+      this.$emit("update", this.task.id, this.inputField, this.inputComplete);
+      this.edit = false;
+    },
+    toggleComplete() {
+      this.inputComplete = !this.task.completed;
+      this.updateTask();
     },
     toggleEdit() {
       this.edit = !this.edit;

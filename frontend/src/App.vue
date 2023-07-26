@@ -2,7 +2,7 @@
   <div>
     <the-header></the-header>
     <input-field @add="addTask"></input-field>
-    <div class="box" v-if="tasks.length != 0">
+    <div class="box" v-if="tasks.length != 0 || showTasks.length != 0">
       <ul>
         <task-list
           v-for="task in showTasks"
@@ -53,10 +53,16 @@ export default defineComponent({
       filter: "all" as string,
       error: "" as string,
       baseurl: "http://localhost:3000" as string,
+      editInput: false,
     };
   },
   beforeMount() {
     this.getTasks();
+  },
+  watch: {
+    filter() {
+      this.filterChanged(this.filter);
+    },
   },
   methods: {
     async getTasks() {
@@ -71,8 +77,7 @@ export default defineComponent({
           this.tasks = [];
           return;
         }
-        this.showTasks = this.tasks;
-        this.updateTasks();
+        this.updateFilter();
         this.error = "";
       } catch (error) {
         if (error instanceof Error) {
@@ -93,12 +98,11 @@ export default defineComponent({
         body: JSON.stringify(newTask),
       });
       this.error = "";
-
       if (response.status != 201) {
         this.error = "Error adding task";
       }
 
-      this.tasks.push({ id: 10000, title: title, completed: false });
+      this.getTasks();
     },
 
     async deleteTask(id: number) {
@@ -110,7 +114,9 @@ export default defineComponent({
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        this.getTasks();
+        this.showTasks.splice(id, 1);
+        console.log(this.showTasks);
+        this.error = "";
       } catch (error) {
         if (error instanceof Error) {
           this.error = "Error deleting task:" + error.message;
@@ -121,9 +127,9 @@ export default defineComponent({
     },
 
     async UpdateTask(id: number, title: string, completed: boolean) {
-      const updatedTask = { title: title, completed: completed };
+      const updatedTask = { id: id, title: title, completed: completed };
       try {
-        const response = await fetch(this.baseurl + `/tasks/${id}`, {
+        const response = await fetch(this.baseurl + `/tasks`, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -135,6 +141,7 @@ export default defineComponent({
           throw new Error("Network response was not ok");
         }
         this.getTasks();
+        this.error = "";
       } catch (error) {
         if (error instanceof Error) {
           this.error = "Error updating task:" + error.message;
@@ -146,6 +153,11 @@ export default defineComponent({
 
     filterChanged(filter: string) {
       this.filter = filter;
+      this.updateFilter();
+    },
+
+    updateFilter() {
+      this.updateTasks();
       if (this.filter == "all") {
         this.showTasks = this.tasks;
       }

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/rs/cors"
 )
 
 type App struct {
@@ -26,22 +26,29 @@ func NewApp() (*App, error) {
 
 func (app *App) Run() error {
 
-	router := gin.New()
+	router := gin.Default()
 
 	// err := app.createTable()
 	// if err != nil {
 	// 	return err
 	// }
 
+	// Configure CORS middleware with desired options
+	router.Use(cors.New(cors.Config{
+		AllowAllOrigins:  true, // Replace with false to restrict allowed origins
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposeHeaders:    []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	}))
+
 	router.GET("/tasks", app.GetTasks)
 	router.POST("/tasks", app.AddTask)
 	router.DELETE("/tasks/:id", app.DeleteTask)
 	router.PUT("/tasks", app.UpdateTask)
 
-	c := cors.Default()
-
-	handler := c.Handler(router)
-	http.Handle("/", handler)
+	router.Run(":3000")
 
 	fmt.Println("Server started on port: 3000")
 	err := http.ListenAndServe(":3000", nil)
