@@ -75,7 +75,6 @@ export default defineComponent({
         this.tasks = await response.json();
         if (this.tasks == null) {
           this.tasks = [];
-          return;
         }
         this.updateFilter();
         this.error = "";
@@ -114,8 +113,6 @@ export default defineComponent({
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        this.showTasks.splice(id, 1);
-        console.log(this.showTasks);
         this.error = "";
       } catch (error) {
         if (error instanceof Error) {
@@ -124,6 +121,7 @@ export default defineComponent({
           console.log("Unexpected error", error);
         }
       }
+      this.getTasks();
     },
 
     async UpdateTask(id: number, title: string, completed: boolean) {
