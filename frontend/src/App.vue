@@ -4,13 +4,13 @@
     <input-field @add="addTask"></input-field>
     <div class="box" v-if="tasks.length != 0 || showTasks.length != 0">
       <ul>
-        <task-list
+        <task-item
           v-for="task in showTasks"
           :key="task.id"
           :task="task"
           @delete="deleteTask"
           @update="UpdateTask"
-        ></task-list>
+        ></task-item>
       </ul>
       <the-footer
         :count="showTasks.length"
@@ -27,7 +27,7 @@ import { defineComponent } from "vue";
 
 import TheHeader from "./components/TheHeader.vue";
 import InputField from "./components/InputField.vue";
-import TaskList from "./components/TaskList.vue";
+import TaskItem from "./components/TaskItem.vue";
 import TheFooter from "./components/TheFooter.vue";
 
 declare interface Tasks {
@@ -41,7 +41,7 @@ export default defineComponent({
   components: {
     TheHeader,
     InputField,
-    TaskList,
+    TaskItem,
     TheFooter,
   },
   data() {

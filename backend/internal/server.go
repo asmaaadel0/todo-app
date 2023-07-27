@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Task to store tasks
+// Task is a struct representing a task
 type Task struct {
 	// Id uniqe for each task
 	Id int `json:"id"`
@@ -17,20 +17,32 @@ type Task struct {
 	Completed bool `json:"completed"`
 }
 
-// GetTasks to retrieve tasks
+// @Summary Get all tasks
+// @Description Get a list of all tasks
+// @Tags tasks
+// @Produce json
+// @Success 200 {array} Task
+// @Router /tasks [get]
 func (app *App) GetTasks(context *gin.Context) {
 
 	context.Writer.Header().Set("Content-Type", "application/json")
 	context.Next()
 	tasks, err := app.getTasks()
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, Task{})
+		context.JSON(http.StatusOK, Task{})
 		return
 	}
 	context.JSON(http.StatusAccepted, &tasks)
 }
 
-// AddTask to add new task
+// @Summary Add a new task
+// @Description Add a new task to the list
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param task body Task true "New task object"
+// @Success 200 {object} Task
+// @Router /tasks [post]
 func (app *App) AddTask(context *gin.Context) {
 
 	var newTask Task
@@ -43,7 +55,7 @@ func (app *App) AddTask(context *gin.Context) {
 		context.JSON(http.StatusInternalServerError, Task{})
 		return
 	}
-	context.JSON(http.StatusCreated, respose)
+	context.JSON(http.StatusOK, respose)
 }
 
 // DeleteTask to delete task
