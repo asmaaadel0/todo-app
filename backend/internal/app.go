@@ -15,13 +15,14 @@ type App struct {
 }
 
 // NewApp to create and initialize app
-func NewApp() (*App, error) {
-	database, err := sql.Open("sqlite3", "database.db")
+func NewApp(path string) (*App, error) {
+	app := &App{}
+	err := app.connectDatabase(path)
 	if err != nil {
 		return nil, err
 	}
 
-	return &App{db: database}, nil
+	return app, nil
 }
 
 func (app *App) Run() error {

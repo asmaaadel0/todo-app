@@ -1,9 +1,23 @@
 package internal
 
 import (
+	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 )
+
+func (app *App) connectDatabase(path string) error {
+	var err error
+	fmt.Printf("trying to connect to database with path: %s\n", path)
+
+	if app.db, err = sql.Open("sqlite3", path); err != nil {
+		return err
+	}
+
+	app.createTable()
+	return nil
+}
 
 func (app *App) createTable() error {
 	tasks_table := `CREATE TABLE tasks (
@@ -19,13 +33,13 @@ func (app *App) createTable() error {
 	return nil
 }
 
-func (app *App) getTasks() []Task {
+func (app *App) getTasks() ([]Task, error) {
 
 	var tasks []Task
 
 	record, err := app.db.Query("SELECT * FROM tasks")
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	defer record.Close()
 
@@ -40,43 +54,50 @@ func (app *App) getTasks() []Task {
 			Title:     title,
 			Completed: completed})
 	}
-	return tasks
+	return tasks, nil
 }
 
-func (app *App) addTask(title string, completed bool) {
+func (app *App) addTask(title string, completed bool) ([]byte, error) {
 	records := `INSERT INTO tasks(title, completed) VALUES (?, ?)`
 	query, err := app.db.Prepare(records)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	_, err = query.Exec(title, completed)
+	response, err := query.Exec(title, completed)
 	if err != nil {
 		log.Fatal(err)
 	}
+	data, err := json.Marshal(&response)
+	return data, err
 }
 
-func (app *App) deleteTask(id int) {
+func (app *App) deleteTask(id int) ([]byte, error) {
 
 	records := `DELETE FROM tasks WHERE id = ?;`
 	query, err := app.db.Prepare(records)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	_, err = query.Exec(id)
+	response, err := query.Exec(id)
 	if err != nil {
 		log.Fatal(err)
 	}
+	data, err := json.Marshal(&response)
+	return data, err
 }
 
-func (app *App) updateTask(task Task) {
+func (app *App) updateTask(task Task) ([]byte, error) {
 
 	records := `UPDATE tasks SET title = ?, completed = ? WHERE id = ?;`
 	query, err := app.db.Prepare(records)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	_, err = query.Exec(task.Title, task.Completed, task.Id)
+	response, err := query.Exec(task.Title, task.Completed, task.Id)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
+	data, err := json.Marshal(&response)
+	return data, err
+
 }
