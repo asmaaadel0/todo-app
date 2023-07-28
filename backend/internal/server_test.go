@@ -140,4 +140,29 @@ func TestUpdateTask(t *testing.T) {
 			t.Errorf("Expected status code %d, but got %d", http.StatusCreated, recorder.Code)
 		}
 	})
+	t.Run("test bad request ", func(t *testing.T) {
+		router := gin.Default()
+
+		app, err := NewApp("database.db")
+		if err != nil {
+			t.Fatalf("Error: %v", err)
+		}
+
+		router.PUT("/tasks", app.UpdateTask)
+
+		req, err := http.NewRequest("PUT", "/tasks", nil)
+		if err != nil {
+			t.Fatalf("Failed to create request: %v", err)
+		}
+		req.Header.Set("Content-Type", "application/json")
+
+		recorder := httptest.NewRecorder()
+
+		router.ServeHTTP(recorder, req)
+
+		if recorder.Code != http.StatusBadRequest {
+			t.Errorf("Expected status code %d, but got %d", http.StatusCreated, recorder.Code)
+		}
+	})
+
 }
