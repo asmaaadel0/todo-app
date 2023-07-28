@@ -15,15 +15,15 @@ func (app *App) connectDatabase(path string) error {
 		return err
 	}
 
-	app.createTable()
-	return nil
+	return app.createTable()
 }
 
 func (app *App) createTable() error {
-	tasks_table := `CREATE TABLE tasks (
-        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-        "title" TEXT,
-        "completed" boolean);`
+	tasks_table := `CREATE TABLE IF NOT EXISTS tasks (
+		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		"title" TEXT,
+		"completed" boolean
+	);`
 	query, err := app.db.Prepare(tasks_table)
 	if err != nil {
 		return err
@@ -99,5 +99,4 @@ func (app *App) updateTask(task Task) ([]byte, error) {
 	}
 	data, err := json.Marshal(&response)
 	return data, err
-
 }

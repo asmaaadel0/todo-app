@@ -8,8 +8,6 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
-	// swaggerFiles "github.com/swaggo/files"
-	// ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type App struct {
@@ -27,26 +25,19 @@ func NewApp(path string) (*App, error) {
 	return app, nil
 }
 
+// Run runs functions of app
 func (app *App) Run() error {
 
 	router := gin.Default()
 
-	// err := app.createTable()
-	// if err != nil {
-	// 	return err
-	// }
-
-	// Configure CORS middleware with desired options
 	router.Use(cors.New(cors.Config{
-		AllowAllOrigins:  true, // Replace with false to restrict allowed origins
+		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposeHeaders:    []string{"Link"},
 		AllowCredentials: true,
-		MaxAge:           300, // Maximum value not ignored by any of major browsers
+		MaxAge:           300,
 	}))
-
-	// router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.GET("/tasks", app.GetTasks)
 	router.POST("/tasks", app.AddTask)
