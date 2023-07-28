@@ -12,124 +12,132 @@ import (
 )
 
 func TestGetTasks(t *testing.T) {
-	router := gin.Default()
+	t.Run("Get request", func(t *testing.T) {
+		router := gin.Default()
 
-	app, err := NewApp("database.db")
-	if err != nil {
-		t.Fatalf("Error: %v", err)
-	}
+		app, err := NewApp("database.db")
+		if err != nil {
+			t.Fatalf("Error: %v", err)
+		}
 
-	router.GET("/tasks", app.GetTasks)
+		router.GET("/tasks", app.GetTasks)
 
-	req, err := http.NewRequest("GET", "/tasks", nil)
-	if err != nil {
-		t.Fatalf("Failed to create request: %v", err)
-	}
+		req, err := http.NewRequest("GET", "/tasks", nil)
+		if err != nil {
+			t.Fatalf("Failed to create request: %v", err)
+		}
 
-	recorder := httptest.NewRecorder()
+		recorder := httptest.NewRecorder()
 
-	router.ServeHTTP(recorder, req)
+		router.ServeHTTP(recorder, req)
 
-	if recorder.Code != http.StatusAccepted {
-		t.Errorf("Expected status code %d, but got %d", http.StatusAccepted, recorder.Code)
-	}
+		if recorder.Code != http.StatusAccepted {
+			t.Errorf("Expected status code %d, but got %d", http.StatusAccepted, recorder.Code)
+		}
 
-	var tasks []Task
-	if err := json.Unmarshal(recorder.Body.Bytes(), &tasks); err != nil {
-		t.Fatalf("Failed to unmarshal response JSON: %v", err)
-	}
+		var tasks []Task
+		if err := json.Unmarshal(recorder.Body.Bytes(), &tasks); err != nil {
+			t.Fatalf("Failed to unmarshal response JSON: %v", err)
+		}
+	})
 }
 
 func TestAddTask(t *testing.T) {
-	router := gin.Default()
+	t.Run("Add task", func(t *testing.T) {
+		router := gin.Default()
 
-	app, err := NewApp("database.db")
-	if err != nil {
-		t.Fatalf("Error: %v", err)
-	}
+		app, err := NewApp("database.db")
+		if err != nil {
+			t.Fatalf("Error: %v", err)
+		}
 
-	router.POST("/tasks", app.AddTask)
+		router.POST("/tasks", app.AddTask)
 
-	newTask := Task{
-		Title:     "Test Task",
-		Completed: false,
-	}
-	requestBody, err := json.Marshal(newTask)
-	if err != nil {
-		t.Fatalf("Failed to marshal request JSON: %v", err)
-	}
+		newTask := Task{
+			Title:     "Test Task",
+			Completed: false,
+		}
+		requestBody, err := json.Marshal(newTask)
+		if err != nil {
+			t.Fatalf("Failed to marshal request JSON: %v", err)
+		}
 
-	req, err := http.NewRequest("POST", "/tasks", bytes.NewBuffer(requestBody))
-	if err != nil {
-		t.Fatalf("Failed to create request: %v", err)
-	}
-	req.Header.Set("Content-Type", "application/json")
+		req, err := http.NewRequest("POST", "/tasks", bytes.NewBuffer(requestBody))
+		if err != nil {
+			t.Fatalf("Failed to create request: %v", err)
+		}
+		req.Header.Set("Content-Type", "application/json")
 
-	recorder := httptest.NewRecorder()
+		recorder := httptest.NewRecorder()
 
-	router.ServeHTTP(recorder, req)
+		router.ServeHTTP(recorder, req)
 
-	if recorder.Code != http.StatusOK {
-		t.Errorf("Expected status code %d, but got %d", http.StatusOK, recorder.Code)
-	}
+		if recorder.Code != http.StatusOK {
+			t.Errorf("Expected status code %d, but got %d", http.StatusOK, recorder.Code)
+		}
+	})
 }
 
 func TestDeleteTask(t *testing.T) {
-	router := gin.Default()
+	t.Run("delete task", func(t *testing.T) {
+		router := gin.Default()
 
-	app, err := NewApp("database.db")
-	if err != nil {
-		t.Fatalf("Error: %v", err)
-	}
+		app, err := NewApp("database.db")
+		if err != nil {
+			t.Fatalf("Error: %v", err)
+		}
 
-	router.DELETE("/tasks/:id", app.DeleteTask)
+		router.DELETE("/tasks/:id", app.DeleteTask)
 
-	taskID := 123
-	req, err := http.NewRequest("DELETE", "/tasks/"+strconv.Itoa(taskID), nil)
-	if err != nil {
-		t.Fatalf("Failed to create request: %v", err)
-	}
+		taskID := 123
+		req, err := http.NewRequest("DELETE", "/tasks/"+strconv.Itoa(taskID), nil)
+		if err != nil {
+			t.Fatalf("Failed to create request: %v", err)
+		}
 
-	recorder := httptest.NewRecorder()
+		recorder := httptest.NewRecorder()
 
-	router.ServeHTTP(recorder, req)
+		router.ServeHTTP(recorder, req)
 
-	if recorder.Code != http.StatusOK {
-		t.Errorf("Expected status code %d, but got %d", http.StatusOK, recorder.Code)
-	}
+		if recorder.Code != http.StatusOK {
+			t.Errorf("Expected status code %d, but got %d", http.StatusOK, recorder.Code)
+		}
+	})
 }
 
 func TestUpdateTask(t *testing.T) {
-	router := gin.Default()
+	t.Run("update task", func(t *testing.T) {
+		router := gin.Default()
 
-	app, err := NewApp("database.db")
-	if err != nil {
-		t.Fatalf("Error: %v", err)
-	}
+		app, err := NewApp("database.db")
+		if err != nil {
+			t.Fatalf("Error: %v", err)
+		}
 
-	router.PUT("/tasks", app.UpdateTask)
+		router.PUT("/tasks", app.UpdateTask)
 
-	updateTask := Task{
-		Id:        123,
-		Title:     "Updated Task",
-		Completed: true,
-	}
-	requestBody, err := json.Marshal(updateTask)
-	if err != nil {
-		t.Fatalf("Failed to marshal request JSON: %v", err)
-	}
+		updateTask := Task{
+			Id:        123,
+			Title:     "Updated Task",
+			Completed: true,
+		}
+		requestBody, err := json.Marshal(updateTask)
+		if err != nil {
+			t.Fatalf("Failed to marshal request JSON: %v", err)
+		}
 
-	req, err := http.NewRequest("PUT", "/tasks", bytes.NewBuffer(requestBody))
-	if err != nil {
-		t.Fatalf("Failed to create request: %v", err)
-	}
-	req.Header.Set("Content-Type", "application/json")
+		req, err := http.NewRequest("PUT", "/tasks", bytes.NewBuffer(requestBody))
+		if err != nil {
+			t.Fatalf("Failed to create request: %v", err)
+		}
+		req.Header.Set("Content-Type", "application/json")
 
-	recorder := httptest.NewRecorder()
+		recorder := httptest.NewRecorder()
 
-	router.ServeHTTP(recorder, req)
+		router.ServeHTTP(recorder, req)
 
-	if recorder.Code != http.StatusCreated {
-		t.Errorf("Expected status code %d, but got %d", http.StatusCreated, recorder.Code)
-	}
+		if recorder.Code != http.StatusCreated {
+			t.Errorf("Expected status code %d, but got %d", http.StatusCreated, recorder.Code)
+		}
+	})
 }
