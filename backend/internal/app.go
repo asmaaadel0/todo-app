@@ -8,6 +8,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type App struct {
@@ -38,6 +40,8 @@ func (app *App) Run() error {
 		AllowCredentials: true,
 		MaxAge:           300,
 	}))
+
+	app.router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	app.router.GET("/tasks", app.GetTasks)
 	app.router.POST("/tasks", app.AddTask)

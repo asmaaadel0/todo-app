@@ -58,7 +58,14 @@ func (app *App) AddTask(context *gin.Context) {
 	context.JSON(http.StatusOK, respose)
 }
 
-// DeleteTask to delete task
+// @Summary Delete a task by ID
+// @Description Delete a task by its ID
+// @Produce json
+// @Param id path int true "Task ID"
+// @Success 200 {string} string "Successfully deleted"
+// @Failure 400 {object} ErrorResponse "Bad Request"
+// @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Router /tasks/{id} [delete]
 func (app *App) DeleteTask(context *gin.Context) {
 
 	idStr := context.Param("id")
@@ -75,7 +82,15 @@ func (app *App) DeleteTask(context *gin.Context) {
 	context.JSON(http.StatusOK, respose)
 }
 
-// UpdateTask to add new task
+// UpdateTask updates a task.
+// @Summary Update a task
+// @Description Update a task with new information
+// @Produce json
+// @Param task body Task true "Task object that needs to be updated"
+// @Success 201 {string} string "Successfully updated"
+// @Failure 400 {object} ErrorResponse "Bad Request"
+// @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Router /tasks [put]
 func (app *App) UpdateTask(context *gin.Context) {
 
 	var updateTask Task
