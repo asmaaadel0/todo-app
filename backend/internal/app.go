@@ -11,7 +11,8 @@ import (
 )
 
 type App struct {
-	db *sql.DB
+	router *gin.Engine
+	db     *sql.DB
 }
 
 // NewApp to create and initialize app
@@ -22,15 +23,14 @@ func NewApp(path string) (*App, error) {
 		return nil, err
 	}
 
+	app.router = gin.Default()
 	return app, nil
 }
 
 // Run runs functions of app
 func (app *App) Run() error {
 
-	router := gin.Default()
-
-	router.Use(cors.New(cors.Config{
+	app.router.Use(cors.New(cors.Config{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
@@ -39,14 +39,17 @@ func (app *App) Run() error {
 		MaxAge:           300,
 	}))
 
-	router.GET("/tasks", app.GetTasks)
-	router.POST("/tasks", app.AddTask)
-	router.DELETE("/tasks/:id", app.DeleteTask)
-	router.PUT("/tasks", app.UpdateTask)
+	app.router.GET("/tasks", app.GetTasks)
+	app.router.POST("/tasks", app.AddTask)
+	app.router.DELETE("/tasks/:id", app.DeleteTask)
+	app.router.PUT("/tasks", app.UpdateTask)
 
-	router.Run(":3000")
+	err := app.router.Run(":3000")
+	if err != nil {
+		return err
+	}
 
 	fmt.Println("Server started on port: 3000")
-	err := http.ListenAndServe(":3000", nil)
+	err = http.ListenAndServe(":3000", nil)
 	return err
 }

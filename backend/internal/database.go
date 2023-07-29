@@ -28,7 +28,12 @@ func (app *App) createTable() error {
 	if err != nil {
 		return err
 	}
-	query.Exec()
+
+	_, err = query.Exec()
+	if err != nil {
+		return err
+	}
+
 	fmt.Println("Table created successfully!")
 	return nil
 }
@@ -47,7 +52,10 @@ func (app *App) getTasks() ([]Task, error) {
 		var id int
 		var title string
 		var completed bool
-		record.Scan(&id, &title, &completed)
+		err = record.Scan(&id, &title, &completed)
+		if err != nil {
+			return nil, err
+		}
 
 		tasks = append(tasks, Task{
 			Id:        id,
