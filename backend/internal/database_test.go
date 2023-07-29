@@ -142,7 +142,7 @@ func TestDeleteTaskDB(t *testing.T) {
 			t.Errorf("Unfulfilled expectations: %s", err)
 		}
 
-		data, err = app.deleteTask(id)
+		_, err = app.deleteTask(id)
 		if err == nil {
 			t.Fatalf("error delete non existed task: %v", err)
 		}
@@ -185,7 +185,7 @@ func TestUpdateTaskDB(t *testing.T) {
 			Title:     "Updated Task",
 			Completed: true,
 		}
-		data, err = app.updateTask(task)
+		_, err = app.updateTask(task)
 		if err == nil {
 			t.Fatalf("error update non exiest task: %v", err)
 		}
