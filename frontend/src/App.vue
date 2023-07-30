@@ -69,9 +69,11 @@ export default defineComponent({
   },
   methods: {
     async getTasks() {
+      this.error = "";
       try {
         const response = await fetch(this.baseurl + "/tasks");
-        if (!response.ok) {
+        if (response.status != 202) {
+          this.error = "Error geting tasks";
           throw new Error("Network response was not ok");
         }
 
@@ -80,7 +82,6 @@ export default defineComponent({
           this.tasks = [];
         }
         this.updateFilter();
-        this.error = "";
       } catch (error) {
         if (error instanceof Error) {
           this.error = "Error fetching tasks:" + error.message;
@@ -91,6 +92,7 @@ export default defineComponent({
     },
 
     async addTask(title: string) {
+      this.error = "";
       const newTask = {
         title: title,
         completed: false,
@@ -99,25 +101,26 @@ export default defineComponent({
         method: "POST",
         body: JSON.stringify(newTask),
       });
-      this.error = "";
       if (response.status != 200) {
         this.error = "Error adding task";
       }
       let id: number = await response.json();
 
       this.tasks.push({ id: id, ...newTask });
+      this.activeTasks.push({ id: id, ...newTask });
     },
 
     async deleteTask(id: number) {
+      this.error = "";
       try {
         const response = await fetch(this.baseurl + `/tasks/${id}`, {
           method: "DELETE",
         });
 
-        if (!response.ok) {
+        if (response.status != 200) {
+          this.error = "Error deleting task";
           throw new Error("Network response was not ok");
         }
-        this.error = "";
       } catch (error) {
         if (error instanceof Error) {
           this.error = "Error deleting task:" + error.message;
@@ -125,18 +128,30 @@ export default defineComponent({
           console.log("Unexpected error", error);
         }
       }
-      this.deletedTask = this.tasks.filter((t) => {
+      this.deletedTask = this.tasks.filter((t: Task) => {
         return t.id == id;
       });
 
-      const index = this.tasks.indexOf(this.deletedTask[0]);
+      let index = this.tasks.indexOf(this.deletedTask[0]);
 
       if (index !== -1) {
         this.tasks.splice(index, 1);
       }
+      index = this.completedTasks.indexOf(this.deletedTask[0]);
+
+      if (index !== -1) {
+        this.completedTasks.splice(index, 1);
+      }
+
+      index = this.activeTasks.indexOf(this.deletedTask[0]);
+
+      if (index !== -1) {
+        this.activeTasks.splice(index, 1);
+      }
     },
 
     async UpdateTask(id: number, title: string, completed: boolean) {
+      this.error = "";
       const updatedTask = { id: id, title: title, completed: completed };
       try {
         const response = await fetch(this.baseurl + `/tasks`, {
@@ -147,19 +162,39 @@ export default defineComponent({
           body: JSON.stringify(updatedTask),
         });
 
-        if (!response.ok) {
+        if (response.status != 201) {
+          this.error = "Error updating task";
           throw new Error("Network response was not ok");
         }
-        this.updatedTask = this.tasks.filter((t) => {
+        this.updatedTask = this.tasks.filter((t: Task) => {
           return t.id == id;
         });
 
-        const index = this.tasks.indexOf(this.updatedTask[0]);
+        let index = this.tasks.indexOf(this.updatedTask[0]);
 
         if (index !== -1) {
           this.tasks[index] = { id: id, title: title, completed: completed };
         }
-        this.error = "";
+
+        index = this.completedTasks.indexOf(this.updatedTask[0]);
+
+        if (index !== -1) {
+          this.completedTasks[index] = {
+            id: id,
+            title: title,
+            completed: completed,
+          };
+        }
+
+        index = this.activeTasks.indexOf(this.updatedTask[0]);
+
+        if (index !== -1) {
+          this.activeTasks[index] = {
+            id: id,
+            title: title,
+            completed: completed,
+          };
+        }
       } catch (error) {
         if (error instanceof Error) {
           this.error = "Error updating task:" + error.message;
@@ -189,10 +224,10 @@ export default defineComponent({
     },
 
     updateTasks() {
-      this.completedTasks = this.tasks.filter((t) => {
+      this.completedTasks = this.tasks.filter((t: Task) => {
         return t.completed == true;
       });
-      this.activeTasks = this.tasks.filter((t) => {
+      this.activeTasks = this.tasks.filter((t: Task) => {
         return t.completed == false;
       });
     },
