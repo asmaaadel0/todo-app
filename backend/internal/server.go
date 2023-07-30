@@ -37,7 +37,7 @@ func (app *App) GetTasks(context *gin.Context) {
 	context.Next()
 	tasks, err := app.getTasks()
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, Task{})
+		context.JSON(http.StatusInternalServerError, err)
 		return
 	}
 	context.JSON(http.StatusAccepted, &tasks)
@@ -63,7 +63,7 @@ func (app *App) AddTask(context *gin.Context) {
 
 	respose, err := app.addTask(newTask.Title, newTask.Completed)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, Task{})
+		context.JSON(http.StatusInternalServerError, err)
 		return
 	}
 	context.JSON(http.StatusOK, respose)
@@ -86,12 +86,12 @@ func (app *App) DeleteTask(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, err)
 		return
 	}
-	respose, err := app.deleteTask(id)
+	err = app.deleteTask(id)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, Task{})
+		context.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	context.JSON(http.StatusOK, respose)
+	context.JSON(http.StatusOK, "Successfully deleted")
 }
 
 // UpdateTask updates a task.
@@ -109,10 +109,10 @@ func (app *App) UpdateTask(context *gin.Context) {
 	if err := context.BindJSON(&updateTask); err != nil {
 		context.JSON(http.StatusBadRequest, err)
 	}
-	respose, err := app.updateTask(updateTask)
+	err := app.updateTask(updateTask)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, Task{})
+		context.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	context.JSON(http.StatusCreated, respose)
+	context.JSON(http.StatusCreated, "Successfully updated")
 }

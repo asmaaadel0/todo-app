@@ -2,7 +2,6 @@ package internal
 
 import (
 	"database/sql"
-	"encoding/json"
 	"regexp"
 	"testing"
 
@@ -173,20 +172,12 @@ func TestDeleteTaskDB(t *testing.T) {
 		mock.ExpectPrepare("DELETE FROM tasks WHERE id = \\?;").ExpectExec().WillReturnResult(result)
 
 		id := 123
-		data, err := app.deleteTask(id)
+		err = app.deleteTask(id)
 		if err != nil {
 			t.Fatalf("Failed to delete task: %v", err)
 		}
 
-		var response map[string]interface{}
-		if err := json.Unmarshal(data, &response); err != nil {
-			t.Fatalf("Failed to unmarshal response JSON: %v", err)
-		}
-		if err := mock.ExpectationsWereMet(); err != nil {
-			t.Errorf("Unfulfilled expectations: %s", err)
-		}
-
-		_, err = app.deleteTask(id)
+		err = app.deleteTask(id)
 		if err == nil {
 			t.Fatalf("error delete non existed task: %v", err)
 		}
@@ -224,14 +215,9 @@ func TestUpdateTaskDB(t *testing.T) {
 
 		mock.ExpectPrepare("UPDATE tasks SET title = \\?, completed = \\? WHERE id = \\?;").ExpectExec().WillReturnResult(result)
 
-		data, err := app.updateTask(task)
+		err = app.updateTask(task)
 		if err != nil {
 			t.Fatalf("Failed to update task: %v", err)
-		}
-
-		var response map[string]interface{}
-		if err := json.Unmarshal(data, &response); err != nil {
-			t.Fatalf("Failed to unmarshal response JSON: %v", err)
 		}
 
 		task = Task{
@@ -239,7 +225,7 @@ func TestUpdateTaskDB(t *testing.T) {
 			Title:     "Updated Task",
 			Completed: true,
 		}
-		_, err = app.updateTask(task)
+		err = app.updateTask(task)
 		if err == nil {
 			t.Fatalf("error update non exiest task: %v", err)
 		}

@@ -48,7 +48,6 @@ func (app *App) Run() error {
 		AllowCredentials: true,
 		MaxAge:           300,
 	}))
-	// docs route
 	app.router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	app.router.GET("/tasks", app.GetTasks)

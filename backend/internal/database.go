@@ -2,9 +2,6 @@ package internal
 
 import (
 	"database/sql"
-	"encoding/json"
-	"fmt"
-	"log"
 	"os"
 	"strings"
 )
@@ -20,7 +17,6 @@ func (app *App) readSqlCommands(schemaPath string) error {
 
 func (app *App) connectDatabase(path string) error {
 	var err error
-	fmt.Printf("trying to connect to database with path: %s\n", path)
 
 	if app.db, err = sql.Open("sqlite3", path); err != nil {
 		return err
@@ -41,7 +37,6 @@ func (app *App) createTable() error {
 		return err
 	}
 
-	fmt.Println("Table created successfully!")
 	return nil
 }
 
@@ -90,32 +85,24 @@ func (app *App) addTask(title string, completed bool) (int64, error) {
 	return id, err
 }
 
-func (app *App) deleteTask(id int) ([]byte, error) {
+func (app *App) deleteTask(id int) error {
 
 	records := app.sqlCommands[3]
 	query, err := app.db.Prepare(records)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	response, err := query.Exec(id)
-	if err != nil {
-		log.Fatal(err)
-	}
-	data, err := json.Marshal(&response)
-	return data, err
+	_, err = query.Exec(id)
+	return err
 }
 
-func (app *App) updateTask(task Task) ([]byte, error) {
+func (app *App) updateTask(task Task) error {
 
 	records := app.sqlCommands[4]
 	query, err := app.db.Prepare(records)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	response, err := query.Exec(task.Title, task.Completed, task.Id)
-	if err != nil {
-		return nil, err
-	}
-	data, err := json.Marshal(&response)
-	return data, err
+	_, err = query.Exec(task.Title, task.Completed, task.Id)
+	return err
 }
