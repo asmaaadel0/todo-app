@@ -10,7 +10,7 @@ import (
 )
 
 func (app *App) readSqlCommands() error {
-	sqlFile, err := ioutil.ReadFile("./schema.sql")
+	sqlFile, err := ioutil.ReadFile("schema.sql")
 	if err != nil {
 		return err
 	}
