@@ -137,14 +137,9 @@ func TestAddTasksDB(t *testing.T) {
 
 		title := "New Task"
 		completed := true
-		data, err := app.addTask(title, completed)
+		_, err = app.addTask(title, completed)
 		if err != nil {
 			t.Fatalf("Failed to add task: %v", err)
-		}
-
-		var response map[string]interface{}
-		if err := json.Unmarshal(data, &response); err != nil {
-			t.Fatalf("Failed to unmarshal response JSON: %v", err)
 		}
 
 		if err := mock.ExpectationsWereMet(); err != nil {

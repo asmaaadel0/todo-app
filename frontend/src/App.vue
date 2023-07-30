@@ -31,7 +31,7 @@ import InputField from "./components/InputField.vue";
 import TaskItem from "./components/TaskItem.vue";
 import TheFooter from "./components/TheFooter.vue";
 
-declare interface Tasks {
+declare interface Task {
   id: number;
   title: string;
   completed: boolean;
@@ -47,18 +47,20 @@ export default defineComponent({
   },
   data() {
     return {
-      tasks: [] as Tasks[],
-      showTasks: [] as Tasks[],
-      completedTasks: [] as Tasks[],
-      activeTasks: [] as Tasks[],
+      tasks: [] as Task[],
+      showTasks: [] as Task[],
+      completedTasks: [] as Task[],
+      activeTasks: [] as Task[],
       filter: "all" as string,
       error: "" as string,
       baseurl: "http://localhost:3000" as string,
       editInput: false,
+      deletedTask: [] as Task[],
+      updatedTask: [] as Task[],
     };
   },
   beforeMount() {
-    this.getTasks();
+    this.filterChanged(this.filter);
   },
   watch: {
     filter() {
@@ -98,11 +100,12 @@ export default defineComponent({
         body: JSON.stringify(newTask),
       });
       this.error = "";
-      if (response.status != 201) {
+      if (response.status != 200) {
         this.error = "Error adding task";
       }
+      let id: number = await response.json();
 
-      this.getTasks();
+      this.tasks.push({ id: id, ...newTask });
     },
 
     async deleteTask(id: number) {
@@ -122,7 +125,15 @@ export default defineComponent({
           console.log("Unexpected error", error);
         }
       }
-      this.getTasks();
+      this.deletedTask = this.tasks.filter((t) => {
+        return t.id == id;
+      });
+
+      const index = this.tasks.indexOf(this.deletedTask[0]);
+
+      if (index !== -1) {
+        this.tasks.splice(index, 1);
+      }
     },
 
     async UpdateTask(id: number, title: string, completed: boolean) {
@@ -139,7 +150,15 @@ export default defineComponent({
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        this.getTasks();
+        this.updatedTask = this.tasks.filter((t) => {
+          return t.id == id;
+        });
+
+        const index = this.tasks.indexOf(this.updatedTask[0]);
+
+        if (index !== -1) {
+          this.tasks[index] = { id: id, title: title, completed: completed };
+        }
         this.error = "";
       } catch (error) {
         if (error instanceof Error) {
@@ -151,6 +170,7 @@ export default defineComponent({
     },
 
     filterChanged(filter: string) {
+      this.getTasks();
       this.filter = filter;
       this.updateFilter();
     },

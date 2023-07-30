@@ -72,18 +72,22 @@ func (app *App) getTasks() ([]Task, error) {
 	return tasks, nil
 }
 
-func (app *App) addTask(title string, completed bool) ([]byte, error) {
+func (app *App) addTask(title string, completed bool) (int64, error) {
 	records := app.sqlCommands[2]
 	query, err := app.db.Prepare(records)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 	response, err := query.Exec(title, completed)
 	if err != nil {
-		log.Fatal(err)
+		return 0, err
 	}
-	data, err := json.Marshal(&response)
-	return data, err
+
+	id, err := response.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+	return id, err
 }
 
 func (app *App) deleteTask(id int) ([]byte, error) {
