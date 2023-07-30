@@ -4,13 +4,13 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 	"strings"
 )
 
 func (app *App) readSqlCommands(schemaPath string) error {
-	sqlFile, err := ioutil.ReadFile(schemaPath)
+	sqlFile, err := os.ReadFile(schemaPath)
 	if err != nil {
 		return err
 	}
