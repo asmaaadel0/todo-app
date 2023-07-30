@@ -18,6 +18,15 @@ func TestConnectDatabase(t *testing.T) {
 		defer db.Close()
 
 		app := &App{}
+		app.sqlCommands = []string{`CREATE TABLE IF NOT EXISTS tasks (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			"title" TEXT,
+			"completed" boolean
+		);`,
+			`SELECT * FROM tasks;`,
+			`INSERT INTO tasks(title, completed) VALUES (?, ?);`,
+			`DELETE FROM tasks WHERE id = ?;`,
+			`UPDATE tasks SET title = ?, completed = ? WHERE id = ?;`}
 
 		err = app.connectDatabase("memory")
 		if err != nil {
@@ -36,6 +45,16 @@ func TestCreateTable(t *testing.T) {
 
 		app := &App{db: db}
 
+		app.sqlCommands = []string{`CREATE TABLE IF NOT EXISTS tasks (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			"title" TEXT,
+			"completed" boolean
+		);`,
+			`SELECT * FROM tasks;`,
+			`INSERT INTO tasks(title, completed) VALUES (?, ?);`,
+			`DELETE FROM tasks WHERE id = ?;`,
+			`UPDATE tasks SET title = ?, completed = ? WHERE id = ?;`}
+
 		err = app.createTable()
 		if err != nil {
 			t.Fatalf("Failed to create table: %v", err)
@@ -52,6 +71,16 @@ func TestGetTasksDB(t *testing.T) {
 		defer db.Close()
 
 		app := &App{db: db}
+
+		app.sqlCommands = []string{`CREATE TABLE IF NOT EXISTS tasks (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			"title" TEXT,
+			"completed" boolean
+		);`,
+			`SELECT * FROM tasks;`,
+			`INSERT INTO tasks(title, completed) VALUES (?, ?);`,
+			`DELETE FROM tasks WHERE id = ?;`,
+			`UPDATE tasks SET title = ?, completed = ? WHERE id = ?;`}
 
 		rows := sqlmock.NewRows([]string{"id", "title", "completed"}).
 			AddRow(1, "Task 1", true).
@@ -92,6 +121,16 @@ func TestAddTasksDB(t *testing.T) {
 
 		app := &App{db: db}
 
+		app.sqlCommands = []string{`CREATE TABLE IF NOT EXISTS tasks (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			"title" TEXT,
+			"completed" boolean
+		);`,
+			`SELECT * FROM tasks;`,
+			`INSERT INTO tasks(title, completed) VALUES (?, ?);`,
+			`DELETE FROM tasks WHERE id = ?;`,
+			`UPDATE tasks SET title = ?, completed = ? WHERE id = ?;`}
+
 		result := sqlmock.NewResult(1, 1)
 
 		mock.ExpectPrepare("INSERT INTO tasks(.+)").ExpectExec().WillReturnResult(result)
@@ -123,6 +162,16 @@ func TestDeleteTaskDB(t *testing.T) {
 		defer db.Close()
 
 		app := &App{db: db}
+
+		app.sqlCommands = []string{`CREATE TABLE IF NOT EXISTS tasks (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			"title" TEXT,
+			"completed" boolean
+		);`,
+			`SELECT * FROM tasks;`,
+			`INSERT INTO tasks(title, completed) VALUES (?, ?);`,
+			`DELETE FROM tasks WHERE id = ?;`,
+			`UPDATE tasks SET title = ?, completed = ? WHERE id = ?;`}
 
 		result := sqlmock.NewResult(1, 1)
 
@@ -158,6 +207,16 @@ func TestUpdateTaskDB(t *testing.T) {
 		defer db.Close()
 
 		app := &App{db: db}
+
+		app.sqlCommands = []string{`CREATE TABLE IF NOT EXISTS tasks (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			"title" TEXT,
+			"completed" boolean
+		);`,
+			`SELECT * FROM tasks;`,
+			`INSERT INTO tasks(title, completed) VALUES (?, ?);`,
+			`DELETE FROM tasks WHERE id = ?;`,
+			`UPDATE tasks SET title = ?, completed = ? WHERE id = ?;`}
 
 		task := Task{
 			Id:        123,
