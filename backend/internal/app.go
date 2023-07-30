@@ -20,15 +20,15 @@ type App struct {
 }
 
 // NewApp to create and initialize app
-func NewApp(path string) (*App, error) {
+func NewApp(databasePath, schemaPath string) (*App, error) {
 	app := &App{}
 
-	err := app.readSqlCommands()
+	err := app.readSqlCommands(schemaPath)
 	if err != nil {
 		return nil, err
 	}
 
-	err = app.connectDatabase(path)
+	err = app.connectDatabase(databasePath)
 	if err != nil {
 		return nil, err
 	}

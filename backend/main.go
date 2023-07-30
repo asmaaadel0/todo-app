@@ -9,10 +9,12 @@ import (
 
 func main() {
 
-	var path string
-	flag.StringVar(&path, "db", "database.db", "database path")
+	var databasePath string
+	flag.StringVar(&databasePath, "db", "database.db", "database path")
 
-	app, err := internal.NewApp(path)
+	schemaPath := "schema.sql"
+
+	app, err := internal.NewApp(databasePath, schemaPath)
 	if err != nil {
 		log.Fatalf("Error:%s", err)
 	}

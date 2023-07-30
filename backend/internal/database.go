@@ -9,8 +9,8 @@ import (
 	"strings"
 )
 
-func (app *App) readSqlCommands() error {
-	sqlFile, err := ioutil.ReadFile("schema.sql")
+func (app *App) readSqlCommands(schemaPath string) error {
+	sqlFile, err := ioutil.ReadFile(schemaPath)
 	if err != nil {
 		return err
 	}
