@@ -4,8 +4,19 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"strings"
 )
+
+func (app *App) readSqlCommands() error {
+	sqlFile, err := ioutil.ReadFile("./schema.sql")
+	if err != nil {
+		return err
+	}
+	app.sqlCommands = strings.Split(string(sqlFile), ";")
+	return nil
+}
 
 func (app *App) connectDatabase(path string) error {
 	var err error
@@ -19,11 +30,7 @@ func (app *App) connectDatabase(path string) error {
 }
 
 func (app *App) createTable() error {
-	tasks_table := `CREATE TABLE IF NOT EXISTS tasks (
-		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-		"title" TEXT,
-		"completed" boolean
-	);`
+	tasks_table := app.sqlCommands[0]
 	query, err := app.db.Prepare(tasks_table)
 	if err != nil {
 		return err
@@ -42,7 +49,7 @@ func (app *App) getTasks() ([]Task, error) {
 
 	var tasks []Task
 
-	record, err := app.db.Query("SELECT * FROM tasks")
+	record, err := app.db.Query(app.sqlCommands[1])
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +73,7 @@ func (app *App) getTasks() ([]Task, error) {
 }
 
 func (app *App) addTask(title string, completed bool) ([]byte, error) {
-	records := `INSERT INTO tasks(title, completed) VALUES (?, ?)`
+	records := app.sqlCommands[2]
 	query, err := app.db.Prepare(records)
 	if err != nil {
 		return nil, err
@@ -81,7 +88,7 @@ func (app *App) addTask(title string, completed bool) ([]byte, error) {
 
 func (app *App) deleteTask(id int) ([]byte, error) {
 
-	records := `DELETE FROM tasks WHERE id = ?;`
+	records := app.sqlCommands[3]
 	query, err := app.db.Prepare(records)
 	if err != nil {
 		return nil, err
@@ -96,7 +103,7 @@ func (app *App) deleteTask(id int) ([]byte, error) {
 
 func (app *App) updateTask(task Task) ([]byte, error) {
 
-	records := `UPDATE tasks SET title = ?, completed = ? WHERE id = ?;`
+	records := app.sqlCommands[4]
 	query, err := app.db.Prepare(records)
 	if err != nil {
 		return nil, err
