@@ -5,7 +5,8 @@
     <div class="box" v-if="tasks.length != 0 || showTasks.length != 0">
       <ul>
         <task-item
-          v-for="task in showTasks"
+          v-for="(task, index) in showTasks"
+          :index="index"
           :key="task.id"
           :task="task"
           @delete="deleteTask"
