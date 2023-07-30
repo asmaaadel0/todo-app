@@ -17,11 +17,19 @@ type Task struct {
 	Completed bool `json:"completed"`
 }
 
+// ErrorResponse represents an error response.
+type ErrorResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
+
+// GetTasks retrieves a list of all tasks.
 // @Summary Get all tasks
 // @Description Get a list of all tasks
 // @Tags tasks
 // @Produce json
-// @Success 200 {array} Task
+// @Success 202 {array} Task
+// @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Router /tasks [get]
 func (app *App) GetTasks(context *gin.Context) {
 
@@ -29,12 +37,13 @@ func (app *App) GetTasks(context *gin.Context) {
 	context.Next()
 	tasks, err := app.getTasks()
 	if err != nil {
-		context.JSON(http.StatusOK, Task{})
+		context.JSON(http.StatusInternalServerError, Task{})
 		return
 	}
 	context.JSON(http.StatusAccepted, &tasks)
 }
 
+// AddTask adds a new task to the list.
 // @Summary Add a new task
 // @Description Add a new task to the list
 // @Tags tasks
@@ -42,6 +51,8 @@ func (app *App) GetTasks(context *gin.Context) {
 // @Produce json
 // @Param task body Task true "New task object"
 // @Success 200 {object} Task
+// @Failure 400 {object} ErrorResponse "Bad Request"
+// @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Router /tasks [post]
 func (app *App) AddTask(context *gin.Context) {
 
@@ -58,6 +69,7 @@ func (app *App) AddTask(context *gin.Context) {
 	context.JSON(http.StatusOK, respose)
 }
 
+// DeleteTask delete a task from list.
 // @Summary Delete a task by ID
 // @Description Delete a task by its ID
 // @Produce json
@@ -71,7 +83,7 @@ func (app *App) DeleteTask(context *gin.Context) {
 	idStr := context.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, err)
+		context.JSON(http.StatusBadRequest, err)
 		return
 	}
 	respose, err := app.deleteTask(id)
