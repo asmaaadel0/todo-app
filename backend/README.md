@@ -19,13 +19,27 @@ $ cd todoapp-Asmaa/backend
 - Install Go dependencies:
 
 ```sh
-go get ./...
+$ go get ./...
 ```
 
-- To start the Todo App, run the following command:
+- Build the project:
 
 ```sh
-go run main.go
+$ go build -o "bin/app" main.go
+$ cd bin
+```
+
+- How to use
+  - if -db flag not found, program will create database called "database.db"
+
+```sh
+$ ./app -db [databasePath]
+```
+
+- To get all tasks open:
+
+```sh
+http://localhost:3000/tasks
 ```
 
 ## API Endpoints
@@ -42,7 +56,7 @@ The Todo App provides the following API endpoints:
 - Run the tests by running:
 
 ```sh
-go test ./...
+$ go test ./...
 ```
 
 - If all tests pass, the output indicate that the tests have passed. if there is failure, the output will provide information about it.

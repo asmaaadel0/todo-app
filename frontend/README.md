@@ -27,25 +27,25 @@ $ cd todoapp-Asmaa/frontend
 - Project setup:
 
 ```sh
-npm install
+$ npm install
 ```
 
 - Compiles and minifies for production:
 
 ```sh
-npm run build
+$ npm run build
 ```
 
 - Lints and fixes files:
 
 ```sh
-npm run lint
+$ npm run lint
 ```
 
 - Run the project.
 
 ```sh
-npm run serve
+$ npm run serve
 ```
 
 ## How to test
@@ -53,7 +53,7 @@ npm run serve
 - Run the tests by running:
 
 ```sh
-npx cypress open
+$ npx cypress open
 ```
 
 - If all tests pass, the output indicate that the tests have passed. if there is failure, the output will provide information about it.
