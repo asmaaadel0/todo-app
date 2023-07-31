@@ -2,9 +2,25 @@ package internal
 
 import (
 	"database/sql"
+	_ "embed"
 	"os"
 	"strings"
 )
+
+//go:embed sql/createTable.sql
+var createTable string
+
+//go:embed sql/getTasks.sql
+var getTasks string
+
+//go:embed sql/addTask.sql
+var addTask string
+
+//go:embed sql/deleteTask.sql
+var deleteTask string
+
+//go:embed sql/updateTask.sql
+var updateTask string
 
 func (app *App) readSqlCommands(schemaPath string) error {
 	sqlFile, err := os.ReadFile(schemaPath)
@@ -26,8 +42,7 @@ func (app *App) connectDatabase(path string) error {
 }
 
 func (app *App) createTable() error {
-	tasks_table := app.sqlCommands[0]
-	query, err := app.db.Prepare(tasks_table)
+	query, err := app.db.Prepare(createTable)
 	if err != nil {
 		return err
 	}
@@ -44,7 +59,7 @@ func (app *App) getTasks() ([]Task, error) {
 
 	var tasks []Task
 
-	record, err := app.db.Query(app.sqlCommands[1])
+	record, err := app.db.Query(getTasks)
 	if err != nil {
 		return nil, err
 	}
@@ -68,8 +83,8 @@ func (app *App) getTasks() ([]Task, error) {
 }
 
 func (app *App) addTask(title string, completed bool) (int64, error) {
-	records := app.sqlCommands[2]
-	query, err := app.db.Prepare(records)
+
+	query, err := app.db.Prepare(addTask)
 	if err != nil {
 		return 0, err
 	}
@@ -87,8 +102,7 @@ func (app *App) addTask(title string, completed bool) (int64, error) {
 
 func (app *App) deleteTask(id int) error {
 
-	records := app.sqlCommands[3]
-	query, err := app.db.Prepare(records)
+	query, err := app.db.Prepare(deleteTask)
 	if err != nil {
 		return err
 	}
@@ -98,8 +112,7 @@ func (app *App) deleteTask(id int) error {
 
 func (app *App) updateTask(task Task) error {
 
-	records := app.sqlCommands[4]
-	query, err := app.db.Prepare(records)
+	query, err := app.db.Prepare(updateTask)
 	if err != nil {
 		return err
 	}
