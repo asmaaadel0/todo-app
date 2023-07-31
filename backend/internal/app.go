@@ -14,21 +14,15 @@ import (
 )
 
 type App struct {
-	router      *gin.Engine
-	db          *sql.DB
-	sqlCommands []string
+	router *gin.Engine
+	db     *sql.DB
 }
 
 // NewApp to create and initialize app
-func NewApp(databasePath, schemaPath string) (*App, error) {
+func NewApp(databasePath string) (*App, error) {
 	app := &App{}
 
-	err := app.readSqlCommands(schemaPath)
-	if err != nil {
-		return nil, err
-	}
-
-	err = app.connectDatabase(databasePath)
+	err := app.connectDatabase(databasePath)
 	if err != nil {
 		return nil, err
 	}

@@ -12,9 +12,7 @@ func main() {
 	var databasePath string
 	flag.StringVar(&databasePath, "db", "database.db", "database path")
 
-	schemaPath := "schema.sql"
-
-	app, err := internal.NewApp(databasePath, schemaPath)
+	app, err := internal.NewApp(databasePath)
 	if err != nil {
 		log.Fatalf("Error:%s", err)
 	}

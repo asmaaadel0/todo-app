@@ -3,8 +3,6 @@ package internal
 import (
 	"database/sql"
 	_ "embed"
-	"os"
-	"strings"
 )
 
 //go:embed sql/createTable.sql
@@ -21,15 +19,6 @@ var deleteTask string
 
 //go:embed sql/updateTask.sql
 var updateTask string
-
-func (app *App) readSqlCommands(schemaPath string) error {
-	sqlFile, err := os.ReadFile(schemaPath)
-	if err != nil {
-		return err
-	}
-	app.sqlCommands = strings.Split(string(sqlFile), ";")
-	return nil
-}
 
 func (app *App) connectDatabase(path string) error {
 	var err error
