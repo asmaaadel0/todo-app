@@ -2,6 +2,7 @@ package internal
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -13,19 +14,28 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// ErrorOutOfRange if user enter invalid port
+var ErrorOutOfRange = errors.New("port number out of range, range should be between [1, 65535]")
+
 type App struct {
 	router *gin.Engine
 	db     *sql.DB
+	port   int
 }
 
 // NewApp to create and initialize app
-func NewApp(databasePath string) (*App, error) {
+func NewApp(databasePath string, port int) (*App, error) {
 	app := &App{}
 
 	err := app.connectDatabase(databasePath)
 	if err != nil {
 		return nil, err
 	}
+	if port < 1 || port > 65535 {
+		return nil, ErrorOutOfRange
+	}
+
+	app.port = port
 
 	app.router = gin.Default()
 	return app, nil
@@ -49,12 +59,14 @@ func (app *App) Run() error {
 	app.router.DELETE("/tasks/:id", app.DeleteTask)
 	app.router.PUT("/tasks", app.UpdateTask)
 
-	err := app.router.Run(":3000")
+	portListner := fmt.Sprintf(":%d", app.port)
+
+	err := app.router.Run(portListner)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("Server started on port: 3000")
-	err = http.ListenAndServe(":3000", nil)
+	fmt.Println("Server started on port", portListner)
+	err = http.ListenAndServe(portListner, nil)
 	return err
 }
