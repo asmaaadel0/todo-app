@@ -72,7 +72,7 @@ export default defineComponent({
       this.error = "";
       try {
         const response = await fetch(this.baseurl + "/tasks");
-        if (response.status != 202) {
+        if (response.status != 200) {
           this.error = "Error geting tasks";
           throw new Error("Network response was not ok");
         }
@@ -101,7 +101,7 @@ export default defineComponent({
         method: "POST",
         body: JSON.stringify(newTask),
       });
-      if (response.status != 200) {
+      if (response.status != 201) {
         this.error = "Error adding task";
       }
       let id: number = await response.json();
