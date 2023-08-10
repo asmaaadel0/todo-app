@@ -58,7 +58,7 @@ func TestGetTasksDB(t *testing.T) {
 
 		mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM tasks")).WillReturnRows(rows)
 
-		tasks, err := app.getTasks()
+		tasks, err := app.getTasksDB()
 		if err != nil {
 			t.Fatalf("Failed to get tasks: %v", err)
 		}
@@ -97,7 +97,7 @@ func TestAddTasksDB(t *testing.T) {
 
 		title := "New Task"
 		completed := true
-		_, err = app.addTask(title, completed)
+		_, err = app.addTaskDB(title, completed)
 		if err != nil {
 			t.Fatalf("Failed to add task: %v", err)
 		}
@@ -123,12 +123,12 @@ func TestDeleteTaskDB(t *testing.T) {
 		mock.ExpectPrepare("DELETE FROM tasks WHERE id = \\?;").ExpectExec().WillReturnResult(result)
 
 		id := 123
-		err = app.deleteTask(id)
+		err = app.deleteTaskDB(id)
 		if err != nil {
 			t.Fatalf("Failed to delete task: %v", err)
 		}
 
-		err = app.deleteTask(id)
+		err = app.deleteTaskDB(id)
 		if err == nil {
 			t.Fatalf("error delete non existed task: %v", err)
 		}
@@ -156,7 +156,7 @@ func TestUpdateTaskDB(t *testing.T) {
 
 		mock.ExpectPrepare("UPDATE tasks SET title = \\?, completed = \\? WHERE id = \\?;").ExpectExec().WillReturnResult(result)
 
-		err = app.updateTask(task)
+		err = app.updateTaskDB(task)
 		if err != nil {
 			t.Fatalf("Failed to update task: %v", err)
 		}
@@ -166,7 +166,7 @@ func TestUpdateTaskDB(t *testing.T) {
 			Title:     "Updated Task",
 			Completed: true,
 		}
-		err = app.updateTask(task)
+		err = app.updateTaskDB(task)
 		if err == nil {
 			t.Fatalf("error update non exiest task: %v", err)
 		}

@@ -1,6 +1,6 @@
-# 📝 Table of Contents
+# Todo App
 
-- [📝 Table of Contents](#-table-of-contents)
+- [Todo App](#todo-app)
   - [About ](#about-)
   - [Website Features ](#website-features-)
   - [Technologies Used ](#technologies-used-)

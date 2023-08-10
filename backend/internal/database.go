@@ -44,7 +44,7 @@ func (app *App) createTable() error {
 	return nil
 }
 
-func (app *App) getTasks() ([]Task, error) {
+func (app *App) getTasksDB() ([]Task, error) {
 
 	var tasks []Task
 
@@ -71,7 +71,7 @@ func (app *App) getTasks() ([]Task, error) {
 	return tasks, nil
 }
 
-func (app *App) addTask(title string, completed bool) (int64, error) {
+func (app *App) addTaskDB(title string, completed bool) (int64, error) {
 
 	query, err := app.db.Prepare(addTask)
 	if err != nil {
@@ -89,7 +89,7 @@ func (app *App) addTask(title string, completed bool) (int64, error) {
 	return id, err
 }
 
-func (app *App) deleteTask(id int) error {
+func (app *App) deleteTaskDB(id int) error {
 
 	query, err := app.db.Prepare(deleteTask)
 	if err != nil {
@@ -99,7 +99,7 @@ func (app *App) deleteTask(id int) error {
 	return err
 }
 
-func (app *App) updateTask(task Task) error {
+func (app *App) updateTaskDB(task Task) error {
 
 	query, err := app.db.Prepare(updateTask)
 	if err != nil {

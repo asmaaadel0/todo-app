@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -28,19 +29,20 @@ type ErrorResponse struct {
 // @Description Get a list of all tasks
 // @Tags tasks
 // @Produce json
-// @Success 202 {array} Task
+// @Success 200 {array} Task
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Router /tasks [get]
-func (app *App) GetTasks(context *gin.Context) {
+func (app *App) getTasks(context *gin.Context) {
 
 	context.Writer.Header().Set("Content-Type", "application/json")
 	context.Next()
-	tasks, err := app.getTasks()
+	tasks, err := app.getTasksDB()
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, err)
+		log.Println(err)
+		context.JSON(http.StatusNotFound, err)
 		return
 	}
-	context.JSON(http.StatusAccepted, &tasks)
+	context.JSON(http.StatusOK, &tasks)
 }
 
 // AddTask adds a new task to the list.
@@ -50,23 +52,26 @@ func (app *App) GetTasks(context *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param task body Task true "New task object"
-// @Success 200 {object} Task
+// @Success 201 {object} Task
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Router /tasks [post]
-func (app *App) AddTask(context *gin.Context) {
+func (app *App) addTask(context *gin.Context) {
 
 	var newTask Task
 	if err := context.BindJSON(&newTask); err != nil {
+		log.Println(err)
 		context.JSON(http.StatusBadRequest, err)
+		return
 	}
 
-	respose, err := app.addTask(newTask.Title, newTask.Completed)
+	respose, err := app.addTaskDB(newTask.Title, newTask.Completed)
 	if err != nil {
+		log.Println(err)
 		context.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	context.JSON(http.StatusOK, respose)
+	context.JSON(http.StatusCreated, respose)
 }
 
 // DeleteTask delete a task from list.
@@ -78,16 +83,18 @@ func (app *App) AddTask(context *gin.Context) {
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Router /tasks/{id} [delete]
-func (app *App) DeleteTask(context *gin.Context) {
+func (app *App) deleteTask(context *gin.Context) {
 
 	idStr := context.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
+		log.Println(err)
 		context.JSON(http.StatusBadRequest, err)
 		return
 	}
-	err = app.deleteTask(id)
+	err = app.deleteTaskDB(id)
 	if err != nil {
+		log.Println(err)
 		context.JSON(http.StatusInternalServerError, err)
 		return
 	}
@@ -103,14 +110,17 @@ func (app *App) DeleteTask(context *gin.Context) {
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Router /tasks [put]
-func (app *App) UpdateTask(context *gin.Context) {
+func (app *App) updateTask(context *gin.Context) {
 
 	var updateTask Task
 	if err := context.BindJSON(&updateTask); err != nil {
+		log.Println(err)
 		context.JSON(http.StatusBadRequest, err)
+		return
 	}
-	err := app.updateTask(updateTask)
+	err := app.updateTaskDB(updateTask)
 	if err != nil {
+		log.Println(err)
 		context.JSON(http.StatusInternalServerError, err)
 		return
 	}

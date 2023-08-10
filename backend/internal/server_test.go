@@ -20,7 +20,7 @@ func TestGetTasks(t *testing.T) {
 			t.Fatalf("Error: %v", err)
 		}
 
-		router.GET("/tasks", app.GetTasks)
+		router.GET("/tasks", app.getTasks)
 
 		req, err := http.NewRequest("GET", "/tasks", nil)
 		if err != nil {
@@ -31,8 +31,8 @@ func TestGetTasks(t *testing.T) {
 
 		router.ServeHTTP(recorder, req)
 
-		if recorder.Code != http.StatusAccepted {
-			t.Errorf("Expected status code %d, but got %d", http.StatusAccepted, recorder.Code)
+		if recorder.Code != http.StatusOK {
+			t.Errorf("Expected status code %d, but got %d", http.StatusOK, recorder.Code)
 		}
 
 		var tasks []Task
@@ -51,7 +51,7 @@ func TestAddTask(t *testing.T) {
 			t.Fatalf("Error: %v", err)
 		}
 
-		router.POST("/tasks", app.AddTask)
+		router.POST("/tasks", app.addTask)
 
 		newTask := Task{
 			Title:     "Test Task",
@@ -72,8 +72,8 @@ func TestAddTask(t *testing.T) {
 
 		router.ServeHTTP(recorder, req)
 
-		if recorder.Code != http.StatusOK {
-			t.Errorf("Expected status code %d, but got %d", http.StatusOK, recorder.Code)
+		if recorder.Code != http.StatusCreated {
+			t.Errorf("Expected status code %d, but got %d", http.StatusCreated, recorder.Code)
 		}
 	})
 }
@@ -87,7 +87,7 @@ func TestDeleteTask(t *testing.T) {
 			t.Fatalf("Error: %v", err)
 		}
 
-		router.DELETE("/tasks/:id", app.DeleteTask)
+		router.DELETE("/tasks/:id", app.deleteTask)
 
 		taskID := 123
 		req, err := http.NewRequest("DELETE", "/tasks/"+strconv.Itoa(taskID), nil)
@@ -114,7 +114,7 @@ func TestUpdateTask(t *testing.T) {
 			t.Fatalf("Error: %v", err)
 		}
 
-		router.PUT("/tasks", app.UpdateTask)
+		router.PUT("/tasks", app.updateTask)
 
 		updateTask := Task{
 			Id:        123,
@@ -148,7 +148,7 @@ func TestUpdateTask(t *testing.T) {
 			t.Fatalf("Error: %v", err)
 		}
 
-		router.PUT("/tasks", app.UpdateTask)
+		router.PUT("/tasks", app.updateTask)
 
 		req, err := http.NewRequest("PUT", "/tasks", nil)
 		if err != nil {
