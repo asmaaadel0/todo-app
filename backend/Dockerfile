@@ -18,8 +18,6 @@ COPY --from=builder /app/app .
 
 EXPOSE 3000
 
-ENV DATABASE_DIR=/data
-
 ENV DATABASE_FILE=database.db
 
 CMD ["./app", "-db", "/data/${DATABASE_FILE}"]
