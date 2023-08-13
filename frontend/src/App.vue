@@ -59,9 +59,8 @@ export default defineComponent({
       filter: FilterStatus.ALL as string,
       error: "" as string,
       baseurl: this.$API_BASE_URL,
-      editInput: false,
-      deletedTask: [] as Task[],
-      updatedTask: [] as Task[],
+      deletedTasks: [] as Task[],
+      updatedTasks: [] as Task[],
     };
   },
   beforeMount() {
@@ -133,22 +132,22 @@ export default defineComponent({
           console.log("Unexpected error", error);
         }
       }
-      this.deletedTask = this.tasks.filter((t: Task) => {
+      this.deletedTasks = this.tasks.filter((t: Task) => {
         return t.id == id;
       });
 
-      let index = this.tasks.indexOf(this.deletedTask[0]);
+      let index = this.tasks.indexOf(this.deletedTasks[0]);
 
       if (index !== -1) {
         this.tasks.splice(index, 1);
       }
-      index = this.completedTasks.indexOf(this.deletedTask[0]);
+      index = this.completedTasks.indexOf(this.deletedTasks[0]);
 
       if (index !== -1) {
         this.completedTasks.splice(index, 1);
       }
 
-      index = this.activeTasks.indexOf(this.deletedTask[0]);
+      index = this.activeTasks.indexOf(this.deletedTasks[0]);
 
       if (index !== -1) {
         this.activeTasks.splice(index, 1);
@@ -171,17 +170,17 @@ export default defineComponent({
           this.error = "Error updating task";
           throw new Error("Network response was not ok");
         }
-        this.updatedTask = this.tasks.filter((t: Task) => {
+        this.updatedTasks = this.tasks.filter((t: Task) => {
           return t.id == id;
         });
 
-        let index = this.tasks.indexOf(this.updatedTask[0]);
+        let index = this.tasks.indexOf(this.updatedTasks[0]);
 
         if (index !== -1) {
           this.tasks[index] = { id: id, title: title, completed: completed };
         }
 
-        index = this.completedTasks.indexOf(this.updatedTask[0]);
+        index = this.completedTasks.indexOf(this.updatedTasks[0]);
 
         if (index !== -1) {
           this.completedTasks[index] = {
@@ -191,7 +190,7 @@ export default defineComponent({
           };
         }
 
-        index = this.activeTasks.indexOf(this.updatedTask[0]);
+        index = this.activeTasks.indexOf(this.updatedTasks[0]);
 
         if (index !== -1) {
           this.activeTasks[index] = {
