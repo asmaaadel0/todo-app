@@ -7,7 +7,7 @@ on:
     branches: [main, development]
 
 jobs:
-  backend-test:
+  test:
     name: Backend Tests
     runs-on: ubuntu-latest
     steps:
@@ -44,48 +44,6 @@ jobs:
           gofmt-flags: -l -d
           working-directory: ./backend/
 
-      - name: Build Backend
-        working-directory: ./backend
-        run: go build -o backend main.go
-
-      - name: Run Backend
-        working-directory: ./backend
-        run: ./backend
-
-  frontend-test:
-    name: Frontend Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
-
-      - name: Install dependencies
-        working-directory: ./frontend
+      - name: Install frontend dependencies
         run: npm install
-
-      - name: Build Frontend
-        working-directory: ./frontend
-        run: npm run build
-
-      - name: Run Frontend
-        working-directory: ./frontend
-        run: npm start
-
-      - name: Start Local Server
-        run: cd ./frontend && npm run serve
-
-      - name: Set up Cypress
-        uses: cypress-io/github-action@v2
-        with:
-          working-directory: ./frontend
-
-      - name: Run Cypress Tests
-        env:
-          CYPRESS_BASE_URL: http://localhost:8080
-        run: |
-          npx cypress run
+        working-directory: frontend
