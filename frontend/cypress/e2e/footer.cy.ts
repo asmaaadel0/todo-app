@@ -1,6 +1,6 @@
 describe("Test Footer", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:8080/");
+    cy.visit("/");
   });
 
   it("should display the correct count of items left", () => {

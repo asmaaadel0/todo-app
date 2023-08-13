@@ -1,6 +1,6 @@
 describe("Test input", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:8080/");
+    cy.visit("/");
   });
   it("should display an error message when title is empty", () => {
     cy.get('input[name="title"]').type("{enter}");

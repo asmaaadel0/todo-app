@@ -10,7 +10,7 @@
           :key="task.id"
           :task="task"
           @delete="deleteTask"
-          @update="UpdateTask"
+          @update="updateTask"
         ></task-item>
       </ul>
       <the-footer
@@ -150,7 +150,7 @@ export default defineComponent({
       }
     },
 
-    async UpdateTask(id: number, title: string, completed: boolean) {
+    async updateTask(id: number, title: string, completed: boolean) {
       this.error = "";
       const updatedTask = { id: id, title: title, completed: completed };
       try {

@@ -1,6 +1,6 @@
 describe("Todo Item", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:8080/");
+    cy.visit("/");
   });
 
   it("should display the task title when not in edit mode", () => {
