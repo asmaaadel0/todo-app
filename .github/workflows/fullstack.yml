@@ -60,11 +60,27 @@ jobs:
         working-directory: ./frontend
         run: npm install
 
-      # - name: Set up Cypress
-      #   uses: cypress-io/github-action@v2
+      - name: Start Local Server
+        run: |
+          npm install -g http-server
+          http-server ./frontend -p 8080 -s &
+        background: true
 
-      # - name: Run Cypress Tests
-      #   env:
-      #     CYPRESS_BASE_URL: http://localhost:8080
-      #   run: |
-      #     npx cypress run
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.20.5
+
+      - name: Run Backend
+        run: cd ./backend && go run main.go
+
+      - name: Set up Cypress
+        uses: cypress-io/github-action@v2
+        with:
+          working-directory: ./frontend
+
+      - name: Run Cypress Tests
+        env:
+          CYPRESS_BASE_URL: http://localhost:8080
+        run: |
+          npx cypress run
