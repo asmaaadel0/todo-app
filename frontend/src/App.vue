@@ -85,6 +85,7 @@ export default defineComponent({
         if (this.tasks == null) {
           this.tasks = [];
         }
+        this.tasks = this.tasks.slice().reverse();
         this.updateFilter();
       } catch (error) {
         if (error instanceof Error) {
@@ -110,8 +111,8 @@ export default defineComponent({
       }
       let id: number = await response.json();
 
-      this.tasks.push({ id: id, ...newTask });
-      this.activeTasks.push({ id: id, ...newTask });
+      this.tasks.unshift({ id: id, ...newTask });
+      this.activeTasks.unshift({ id: id, ...newTask });
     },
 
     async deleteTask(id: number) {

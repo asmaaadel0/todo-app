@@ -36,6 +36,8 @@ describe("Todo Item", () => {
   });
 
   it('should emit a "delete" event when the delete icon is clicked', () => {
+    cy.get("#delete-0").click();
+    cy.get("#delete-1").click();
     cy.get("#delete-2").click();
   });
 });

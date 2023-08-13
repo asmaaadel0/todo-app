@@ -2,3 +2,6 @@
 /backend/internal/memory
 
 .env.development
+
+/frontend/cypress/screenshots
+/frontend/cypress/videos
