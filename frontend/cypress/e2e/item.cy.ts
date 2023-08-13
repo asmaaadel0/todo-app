@@ -18,10 +18,21 @@ describe("Todo Item", () => {
     cy.get("#label-1").should("have.text", "New Task");
   });
 
+  it("should update the task title when edited and submitted", () => {
+    cy.get("#label-1").dblclick();
+    cy.get(".item-box input").type("{selectall}My Task{enter}");
+    cy.get("#label-1").should("have.text", "My Task");
+  });
+
   it("should toggle the task completed status when the completed icon is clicked", () => {
     cy.get("#update-0").should("not.have.class", "green");
     cy.get("#update-1").click();
     cy.get("#update-1").should("have.class", "green");
+  });
+
+  it("should toggle the task completed status when the completed icon is clicked", () => {
+    cy.get("#update-1").click();
+    cy.get("#update-1").should("not.have.class", "green");
   });
 
   it('should emit a "delete" event when the delete icon is clicked', () => {

@@ -3,6 +3,10 @@ describe("Test Footer", () => {
     cy.visit("/");
   });
 
+  it("add task", () => {
+    cy.get('input[name="title"]').type("My Task{enter}");
+  });
+
   it("should display the correct count of items left", () => {
     cy.get(".todo-count").should("contain.text", "items left"); // Assuming the default count is 0
   });
