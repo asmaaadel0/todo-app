@@ -58,7 +58,7 @@ export default defineComponent({
       activeTasks: [] as Task[],
       filter: FilterStatus.ALL as string,
       error: "" as string,
-      baseurl: "http://localhost:3000" as string,
+      baseurl: this.$API_BASE_URL,
       editInput: false,
       deletedTask: [] as Task[],
       updatedTask: [] as Task[],
