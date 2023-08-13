@@ -36,6 +36,11 @@ declare interface Task {
   title: string;
   completed: boolean;
 }
+enum FilterStatus {
+  ALL = "all",
+  Active = "active",
+  Completed = "completed",
+}
 export default defineComponent({
   name: "App",
 
@@ -51,7 +56,7 @@ export default defineComponent({
       showTasks: [] as Task[],
       completedTasks: [] as Task[],
       activeTasks: [] as Task[],
-      filter: "all" as string,
+      filter: FilterStatus.ALL as string,
       error: "" as string,
       baseurl: "http://localhost:3000" as string,
       editInput: false,
@@ -212,13 +217,13 @@ export default defineComponent({
 
     updateFilter() {
       this.updateTasks();
-      if (this.filter == "all") {
+      if (this.filter == FilterStatus.ALL) {
         this.showTasks = this.tasks;
       }
-      if (this.filter == "active") {
+      if (this.filter == FilterStatus.Active) {
         this.showTasks = this.activeTasks;
       }
-      if (this.filter == "completed") {
+      if (this.filter == FilterStatus.Completed) {
         this.showTasks = this.completedTasks;
       }
     },
