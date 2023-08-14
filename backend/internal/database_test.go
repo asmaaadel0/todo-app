@@ -97,13 +97,19 @@ func TestAddTasksDB(t *testing.T) {
 
 		title := "New Task"
 		completed := true
-		_, err = app.addTaskDB(title, completed)
+		id, err := app.addTaskDB(title, completed)
 		if err != nil {
 			t.Fatalf("Failed to add task: %v", err)
 		}
 
 		if err := mock.ExpectationsWereMet(); err != nil {
 			t.Errorf("Unfulfilled expectations: %s", err)
+		}
+
+		expectedID := int64(1)
+
+		if id != expectedID {
+			t.Errorf("expected id: %d, but found %d", expectedID, id)
 		}
 	})
 }
@@ -168,7 +174,7 @@ func TestUpdateTaskDB(t *testing.T) {
 		}
 		err = app.updateTaskDB(task)
 		if err == nil {
-			t.Fatalf("error update non exiest task: %v", err)
+			t.Fatalf("error update non existent task: %v", err)
 		}
 	})
 }
