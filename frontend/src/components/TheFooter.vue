@@ -5,6 +5,7 @@
       <li>
         <button
           @click="filterChange('all')"
+          id="all"
           :class="clicked == 'all' ? 'clicked' : ''"
         >
           All
@@ -13,6 +14,7 @@
       <li>
         <button
           @click="filterChange('active')"
+          id="active"
           :class="clicked == 'active' ? 'clicked' : ''"
         >
           Active
@@ -21,6 +23,7 @@
       <li>
         <button
           @click="filterChange('completed')"
+          id="completed"
           :class="clicked == 'completed' ? 'clicked' : ''"
         >
           Completed

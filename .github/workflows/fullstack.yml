@@ -47,3 +47,7 @@ jobs:
       - name: Install frontend dependencies
         run: npm install
         working-directory: frontend
+
+      - name: Run frontend tests
+        run: npx cypress run --component
+        working-directory: ./frontend/
