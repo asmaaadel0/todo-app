@@ -1,4 +1,4 @@
-name: Full Stack
+name: Backend
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     branches: [main, development]
 
 jobs:
-  test:
-    name: Tests
+  backend-test:
+    name: backend-test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -43,11 +43,3 @@ jobs:
           gofmt-path: ./
           gofmt-flags: -l -d
           working-directory: ./backend/
-
-      - name: Install frontend dependencies
-        run: npm install
-        working-directory: frontend
-
-      - name: Run frontend tests
-        run: npx cypress run --component
-        working-directory: ./frontend/
