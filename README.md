@@ -6,6 +6,7 @@
   - [Technologies Used ](#technologies-used-)
   - [Prerequisites ](#prerequisites-)
   - [How to Use ](#how-to-use-)
+  - [How to Run using docker-compose ](#how-to-run-using-docker-compose-)
   - [API Documentation ](#api-documentation-)
   - [End-to-End Tests ](#end-to-end-tests-)
 
@@ -73,6 +74,12 @@ npm run serve
 
 - Access the application:
   - Open your web browser and go to http://localhost:8080 to access the Todo app.
+
+## How to Run using docker-compose <a name = "docker"></a>
+
+```sh
+docker-compose up -d
+```
 
 ## API Documentation <a name = " API-Documentation"></a>
 
