@@ -4,7 +4,6 @@
   - [About ](#about-)
   - [Website Features ](#website-features-)
   - [Technologies Used ](#technologies-used-)
-  - [Prerequisites ](#prerequisites-)
   - [How to Use ](#how-to-use-)
   - [How to Run using docker-compose ](#how-to-run-using-docker-compose-)
   - [API Documentation ](#api-documentation-)
@@ -33,12 +32,6 @@ This is a Todo application implemented as a full-stack application using Go (Gol
 - Frontend:
   - Vue.js: A progressive JavaScript framework for building user interfaces.
   - Cypress: An end-to-end testing framework for web applications.
-
-## Prerequisites <a name = "Prerequisites"></a>
-
-- Before running the Todo app, ensure you have the following installed:
-  - Go: https://golang.org/doc/install
-  - Node.js and npm: https://nodejs.org/en/download/
 
 ## How to Use <a name = "How-to-Use"></a>
 
