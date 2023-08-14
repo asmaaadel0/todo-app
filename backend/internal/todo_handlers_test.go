@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strconv"
 	"testing"
 
@@ -15,7 +16,7 @@ func TestGetTasks(t *testing.T) {
 	t.Run("Get request", func(t *testing.T) {
 		router := gin.Default()
 
-		app, err := NewApp("../database.db", 3000)
+		app, err := NewApp("./database.db", 3000)
 		if err != nil {
 			t.Fatalf("Error: %v", err)
 		}
@@ -46,7 +47,7 @@ func TestAddTask(t *testing.T) {
 	t.Run("Add task", func(t *testing.T) {
 		router := gin.Default()
 
-		app, err := NewApp("../database.db", 3000)
+		app, err := NewApp("./database.db", 3000)
 		if err != nil {
 			t.Fatalf("Error: %v", err)
 		}
@@ -82,7 +83,7 @@ func TestDeleteTask(t *testing.T) {
 	t.Run("delete task", func(t *testing.T) {
 		router := gin.Default()
 
-		app, err := NewApp("../database.db", 3000)
+		app, err := NewApp("./database.db", 3000)
 		if err != nil {
 			t.Fatalf("Error: %v", err)
 		}
@@ -109,7 +110,7 @@ func TestUpdateTask(t *testing.T) {
 	t.Run("update task", func(t *testing.T) {
 		router := gin.Default()
 
-		app, err := NewApp("../database.db", 3000)
+		app, err := NewApp("./database.db", 3000)
 		if err != nil {
 			t.Fatalf("Error: %v", err)
 		}
@@ -143,10 +144,11 @@ func TestUpdateTask(t *testing.T) {
 	t.Run("test bad request ", func(t *testing.T) {
 		router := gin.Default()
 
-		app, err := NewApp("../database.db", 3000)
+		app, err := NewApp("./database.db", 3000)
 		if err != nil {
 			t.Fatalf("Error: %v", err)
 		}
+		defer os.Remove("./database.db")
 
 		router.PUT("/tasks", app.updateTask)
 

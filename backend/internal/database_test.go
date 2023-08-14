@@ -2,6 +2,7 @@ package internal
 
 import (
 	"database/sql"
+	"os"
 	"regexp"
 	"testing"
 
@@ -39,6 +40,7 @@ func TestCreateTable(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Failed to create table: %v", err)
 		}
+		defer os.Remove("memory")
 	})
 }
 
