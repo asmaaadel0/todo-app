@@ -96,7 +96,7 @@ func (app *App) deleteTask(context *gin.Context) {
 // @Description Update a task with new information
 // @Produce json
 // @Param task body Task true "Task object that needs to be updated"
-// @Success 20o {string} string "Successfully updated"
+// @Success 200 {string} string "Successfully updated"
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Router /tasks [put]

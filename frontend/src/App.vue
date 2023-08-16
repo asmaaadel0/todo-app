@@ -167,7 +167,7 @@ export default defineComponent({
           body: JSON.stringify(updatedTask),
         });
 
-        if (response.status != 201) {
+        if (response.status != 200) {
           this.error = "Error updating task";
           throw new Error("Network response was not ok");
         }
