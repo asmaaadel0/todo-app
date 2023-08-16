@@ -1,8 +1,6 @@
 package internal
 
 import (
-	"database/sql"
-	"os"
 	"regexp"
 	"testing"
 
@@ -11,15 +9,13 @@ import (
 
 func TestConnectDatabase(t *testing.T) {
 	t.Run("connect to database", func(t *testing.T) {
-		client := DBClient{}
-		var err error
-		client.db, err = sql.Open("sqlite3", "memory")
+		client, _, err := sqlmock.New()
 		if err != nil {
-			t.Fatalf("Failed to create memory database: %v", err)
+			t.Fatalf("Failed to create mock database: %v", err)
 		}
-		defer client.db.Close()
+		defer client.Close()
 
-		app := &App{}
+		app := &App{client: DBClient{db: client}}
 
 		err = app.client.connectDatabase("memory")
 		if err != nil {
@@ -30,36 +26,38 @@ func TestConnectDatabase(t *testing.T) {
 
 func TestCreateTable(t *testing.T) {
 	t.Run("test create table", func(t *testing.T) {
-		client := DBClient{}
-		var err error
-		client.db, err = sql.Open("sqlite3", "memory")
+		client, mock, err := sqlmock.New()
 		if err != nil {
-			t.Fatalf("Failed to create memory database: %v", err)
+			t.Fatalf("Failed to create mock database: %v", err)
 		}
-		defer client.db.Close()
+		defer client.Close()
 
-		app := &App{client: client}
+		mock.ExpectPrepare("CREATE TABLE IF NOT EXISTS tasks").
+			ExpectExec().
+			WillReturnResult(sqlmock.NewResult(0, 0))
+
+		app := &App{client: DBClient{db: client}}
 
 		err = app.client.createTable()
 		if err != nil {
 			t.Fatalf("Failed to create table: %v", err)
 		}
-		defer os.Remove("memory")
+
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("there were unfulfilled expectations: %s", err)
+		}
 	})
 }
 
 func TestGetTasksDB(t *testing.T) {
 	t.Run("test get tasks", func(t *testing.T) {
-		client := DBClient{}
-		var err error
-		var mock sqlmock.Sqlmock
-		client.db, mock, err = sqlmock.New()
+		client, mock, err := sqlmock.New()
 		if err != nil {
 			t.Fatalf("Failed to create mock database: %v", err)
 		}
-		defer client.db.Close()
+		defer client.Close()
 
-		app := &App{client: client}
+		app := &App{client: DBClient{db: client}}
 
 		rows := sqlmock.NewRows([]string{"id", "title", "completed"}).
 			AddRow(1, "Task 1", true).
@@ -92,16 +90,13 @@ func TestGetTasksDB(t *testing.T) {
 
 func TestAddTasksDB(t *testing.T) {
 	t.Run("test add task", func(t *testing.T) {
-		client := DBClient{}
-		var err error
-		var mock sqlmock.Sqlmock
-		client.db, mock, err = sqlmock.New()
+		client, mock, err := sqlmock.New()
 		if err != nil {
 			t.Fatalf("Failed to create mock database: %v", err)
 		}
-		defer client.db.Close()
+		defer client.Close()
 
-		app := &App{client: client}
+		app := &App{client: DBClient{db: client}}
 
 		result := sqlmock.NewResult(1, 1)
 
@@ -128,16 +123,14 @@ func TestAddTasksDB(t *testing.T) {
 
 func TestDeleteTaskDB(t *testing.T) {
 	t.Run("test delete task", func(t *testing.T) {
-		client := DBClient{}
-		var err error
-		var mock sqlmock.Sqlmock
-		client.db, mock, err = sqlmock.New()
+		client, mock, err := sqlmock.New()
 		if err != nil {
 			t.Fatalf("Failed to create mock database: %v", err)
 		}
-		defer client.db.Close()
+		defer client.Close()
 
-		app := &App{client: client}
+		app := &App{client: DBClient{db: client}}
+
 		result := sqlmock.NewResult(1, 1)
 
 		mock.ExpectPrepare("DELETE FROM tasks WHERE id = \\?;").ExpectExec().WillReturnResult(result)
@@ -157,16 +150,13 @@ func TestDeleteTaskDB(t *testing.T) {
 
 func TestUpdateTaskDB(t *testing.T) {
 	t.Run("test update task", func(t *testing.T) {
-		client := DBClient{}
-		var err error
-		var mock sqlmock.Sqlmock
-		client.db, mock, err = sqlmock.New()
+		client, mock, err := sqlmock.New()
 		if err != nil {
 			t.Fatalf("Failed to create mock database: %v", err)
 		}
-		defer client.db.Close()
+		defer client.Close()
 
-		app := &App{client: client}
+		app := &App{client: DBClient{db: client}}
 
 		task := Task{
 			Id:        123,
