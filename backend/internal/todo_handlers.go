@@ -29,7 +29,7 @@ func (app *App) getTasks(context *gin.Context) {
 	tasks, err := app.client.getTasksDB()
 	if err != nil {
 		log.Println(err)
-		context.JSON(http.StatusNotFound, err)
+		context.JSON(http.StatusInternalServerError, "internal server error")
 		return
 	}
 	context.JSON(http.StatusOK, &tasks)
@@ -58,7 +58,7 @@ func (app *App) addTask(context *gin.Context) {
 	respose, err := app.client.addTaskDB(newTask.Title, newTask.Completed)
 	if err != nil {
 		log.Println(err)
-		context.JSON(http.StatusInternalServerError, err)
+		context.JSON(http.StatusInternalServerError, "internal server error")
 		return
 	}
 	context.JSON(http.StatusCreated, respose)
@@ -85,7 +85,7 @@ func (app *App) deleteTask(context *gin.Context) {
 	err = app.client.deleteTaskDB(id)
 	if err != nil {
 		log.Println(err)
-		context.JSON(http.StatusInternalServerError, err)
+		context.JSON(http.StatusInternalServerError, "internal server error")
 		return
 	}
 	context.JSON(http.StatusOK, "Successfully deleted")
@@ -96,7 +96,7 @@ func (app *App) deleteTask(context *gin.Context) {
 // @Description Update a task with new information
 // @Produce json
 // @Param task body Task true "Task object that needs to be updated"
-// @Success 201 {string} string "Successfully updated"
+// @Success 20o {string} string "Successfully updated"
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Router /tasks [put]
@@ -121,8 +121,8 @@ func (app *App) updateTask(context *gin.Context) {
 	err = app.client.updateTaskDB(updateTask)
 	if err != nil {
 		log.Println(err)
-		context.JSON(http.StatusInternalServerError, err)
+		context.JSON(http.StatusInternalServerError, "internal server error")
 		return
 	}
-	context.JSON(http.StatusCreated, "Successfully updated")
+	context.JSON(http.StatusOK, "Successfully updated")
 }
