@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
@@ -19,7 +18,7 @@ var ErrorOutOfRange = errors.New("port number out of range, range should be betw
 
 type App struct {
 	router *gin.Engine
-	db     *sql.DB
+	client DBClient
 	port   int
 }
 
@@ -27,7 +26,7 @@ type App struct {
 func NewApp(databasePath string, port int) (*App, error) {
 	app := &App{}
 
-	err := app.connectDatabase(databasePath)
+	err := app.client.connectDatabase(databasePath)
 	if err != nil {
 		return nil, err
 	}
@@ -44,14 +43,8 @@ func NewApp(databasePath string, port int) (*App, error) {
 // Run runs functions of app
 func (app *App) Run() error {
 
-	app.router.Use(cors.New(cors.Config{
-		AllowAllOrigins:  true,
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		ExposeHeaders:    []string{"Link"},
-		AllowCredentials: true,
-		MaxAge:           300,
-	}))
+	app.router.Use(cors.Default())
+
 	app.router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	app.router.GET("/tasks", app.getTasks)

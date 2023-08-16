@@ -20,18 +20,23 @@ var deleteTask string
 //go:embed sql/updateTask.sql
 var updateTask string
 
-func (app *App) connectDatabase(path string) error {
+// DBClient used to start, close and make queries on database
+type DBClient struct {
+	db *sql.DB
+}
+
+func (client *DBClient) connectDatabase(path string) error {
 	var err error
 
-	if app.db, err = sql.Open("sqlite3", path); err != nil {
+	if client.db, err = sql.Open("sqlite3", path); err != nil {
 		return err
 	}
 
-	return app.createTable()
+	return client.createTable()
 }
 
-func (app *App) createTable() error {
-	query, err := app.db.Prepare(createTable)
+func (client *DBClient) createTable() error {
+	query, err := client.db.Prepare(createTable)
 	if err != nil {
 		return err
 	}
@@ -44,11 +49,11 @@ func (app *App) createTable() error {
 	return nil
 }
 
-func (app *App) getTasksDB() ([]Task, error) {
+func (client *DBClient) getTasksDB() ([]Task, error) {
 
 	var tasks []Task
 
-	record, err := app.db.Query(getTasks)
+	record, err := client.db.Query(getTasks)
 	if err != nil {
 		return nil, err
 	}
@@ -71,9 +76,9 @@ func (app *App) getTasksDB() ([]Task, error) {
 	return tasks, nil
 }
 
-func (app *App) addTaskDB(title string, completed bool) (int64, error) {
+func (client *DBClient) addTaskDB(title string, completed bool) (int64, error) {
 
-	query, err := app.db.Prepare(addTask)
+	query, err := client.db.Prepare(addTask)
 	if err != nil {
 		return 0, err
 	}
@@ -89,9 +94,9 @@ func (app *App) addTaskDB(title string, completed bool) (int64, error) {
 	return id, err
 }
 
-func (app *App) deleteTaskDB(id int) error {
+func (client *DBClient) deleteTaskDB(id int) error {
 
-	query, err := app.db.Prepare(deleteTask)
+	query, err := client.db.Prepare(deleteTask)
 	if err != nil {
 		return err
 	}
@@ -99,9 +104,9 @@ func (app *App) deleteTaskDB(id int) error {
 	return err
 }
 
-func (app *App) updateTaskDB(task Task) error {
+func (client *DBClient) updateTaskDB(task Task) error {
 
-	query, err := app.db.Prepare(updateTask)
+	query, err := client.db.Prepare(updateTask)
 	if err != nil {
 		return err
 	}

@@ -26,7 +26,7 @@ func (app *App) getTasks(context *gin.Context) {
 
 	context.Writer.Header().Set("Content-Type", "application/json")
 	context.Next()
-	tasks, err := app.getTasksDB()
+	tasks, err := app.client.getTasksDB()
 	if err != nil {
 		log.Println(err)
 		context.JSON(http.StatusNotFound, err)
@@ -55,7 +55,7 @@ func (app *App) addTask(context *gin.Context) {
 		return
 	}
 
-	respose, err := app.addTaskDB(newTask.Title, newTask.Completed)
+	respose, err := app.client.addTaskDB(newTask.Title, newTask.Completed)
 	if err != nil {
 		log.Println(err)
 		context.JSON(http.StatusInternalServerError, err)
@@ -82,7 +82,7 @@ func (app *App) deleteTask(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, err)
 		return
 	}
-	err = app.deleteTaskDB(id)
+	err = app.client.deleteTaskDB(id)
 	if err != nil {
 		log.Println(err)
 		context.JSON(http.StatusInternalServerError, err)
@@ -108,7 +108,7 @@ func (app *App) updateTask(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, err)
 		return
 	}
-	err := app.updateTaskDB(updateTask)
+	err := app.client.updateTaskDB(updateTask)
 	if err != nil {
 		log.Println(err)
 		context.JSON(http.StatusInternalServerError, err)
