@@ -50,7 +50,7 @@ func (app *App) Run() error {
 	app.router.GET("/tasks", app.getTasks)
 	app.router.POST("/tasks", app.addTask)
 	app.router.DELETE("/tasks/:id", app.deleteTask)
-	app.router.PUT("/tasks", app.updateTask)
+	app.router.PUT("/tasks/:id", app.updateTask)
 
 	portListner := fmt.Sprintf(":%d", app.port)
 

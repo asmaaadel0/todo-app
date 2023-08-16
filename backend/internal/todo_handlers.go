@@ -102,13 +102,23 @@ func (app *App) deleteTask(context *gin.Context) {
 // @Router /tasks [put]
 func (app *App) updateTask(context *gin.Context) {
 
+	idStr := context.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		log.Println(err)
+		context.JSON(http.StatusBadRequest, err)
+		return
+	}
+
 	var updateTask Task
 	if err := context.BindJSON(&updateTask); err != nil {
 		log.Println(err)
 		context.JSON(http.StatusBadRequest, err)
 		return
 	}
-	err := app.client.updateTaskDB(updateTask)
+	updateTask.Id = id
+
+	err = app.client.updateTaskDB(updateTask)
 	if err != nil {
 		log.Println(err)
 		context.JSON(http.StatusInternalServerError, err)

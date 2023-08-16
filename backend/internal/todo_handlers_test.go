@@ -115,10 +115,9 @@ func TestUpdateTask(t *testing.T) {
 			t.Fatalf("Error: %v", err)
 		}
 
-		router.PUT("/tasks", app.updateTask)
+		router.PUT("/tasks/:id", app.updateTask)
 
 		updateTask := Task{
-			Id:        123,
 			Title:     "Updated Task",
 			Completed: true,
 		}
@@ -127,7 +126,7 @@ func TestUpdateTask(t *testing.T) {
 			t.Fatalf("Failed to marshal request JSON: %v", err)
 		}
 
-		req, err := http.NewRequest("PUT", "/tasks", bytes.NewBuffer(requestBody))
+		req, err := http.NewRequest("PUT", "/tasks/1", bytes.NewBuffer(requestBody))
 		if err != nil {
 			t.Fatalf("Failed to create request: %v", err)
 		}
@@ -141,6 +140,7 @@ func TestUpdateTask(t *testing.T) {
 			t.Errorf("Expected status code %d, but got %d", http.StatusCreated, recorder.Code)
 		}
 	})
+
 	t.Run("test bad request ", func(t *testing.T) {
 		router := gin.Default()
 
@@ -150,9 +150,9 @@ func TestUpdateTask(t *testing.T) {
 		}
 		defer os.Remove("./database.db")
 
-		router.PUT("/tasks", app.updateTask)
+		router.PUT("/tasks/:id", app.updateTask)
 
-		req, err := http.NewRequest("PUT", "/tasks", nil)
+		req, err := http.NewRequest("PUT", "/tasks/1", nil)
 		if err != nil {
 			t.Fatalf("Failed to create request: %v", err)
 		}
@@ -163,7 +163,42 @@ func TestUpdateTask(t *testing.T) {
 		router.ServeHTTP(recorder, req)
 
 		if recorder.Code != http.StatusBadRequest {
-			t.Errorf("Expected status code %d, but got %d", http.StatusCreated, recorder.Code)
+			t.Errorf("Expected status code %d, but got %d", http.StatusBadRequest, recorder.Code)
+		}
+	})
+
+	t.Run("test Not found", func(t *testing.T) {
+		router := gin.Default()
+
+		app, err := NewApp("./database.db", 3000)
+		if err != nil {
+			t.Fatalf("Error: %v", err)
+		}
+		defer os.Remove("./database.db")
+
+		router.PUT("/tasks", app.updateTask)
+
+		updateTask := Task{
+			Title:     "Updated Task",
+			Completed: true,
+		}
+		requestBody, err := json.Marshal(updateTask)
+		if err != nil {
+			t.Fatalf("Failed to marshal request JSON: %v", err)
+		}
+
+		req, err := http.NewRequest("PUT", "/tasks/11111", bytes.NewBuffer(requestBody))
+		if err != nil {
+			t.Fatalf("Failed to create request: %v", err)
+		}
+		req.Header.Set("Content-Type", "application/json")
+
+		recorder := httptest.NewRecorder()
+
+		router.ServeHTTP(recorder, req)
+
+		if recorder.Code != http.StatusNotFound {
+			t.Errorf("Expected status code %d, but got %d", http.StatusNotFound, recorder.Code)
 		}
 	})
 }
