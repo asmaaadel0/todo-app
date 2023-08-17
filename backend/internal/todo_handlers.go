@@ -24,8 +24,6 @@ type ErrorResponse struct {
 // @Router /tasks [get]
 func (app *App) getTasks(context *gin.Context) {
 
-	context.Writer.Header().Set("Content-Type", "application/json")
-	context.Next()
 	tasks, err := app.client.getTasksDB()
 	if err != nil {
 		log.Println(err)

@@ -3,6 +3,7 @@ package internal
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 
 	_ "github.com/codescalersinternships/todoapp-Asmaa/docs"
@@ -13,8 +14,8 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// ErrorOutOfRange if user enter invalid port
-var ErrorOutOfRange = errors.New("port number out of range, range should be between [1, 65535]")
+// OutOfRangeError if user enter invalid port
+var OutOfRangeError = errors.New("port number out of range, range should be between [1, 65535]")
 
 type App struct {
 	router *gin.Engine
@@ -30,8 +31,14 @@ func NewApp(databasePath string, port int) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	err = app.client.createTable()
+	if err != nil {
+		return nil, err
+	}
+
 	if port < 1 || port > 65535 {
-		return nil, ErrorOutOfRange
+		return nil, OutOfRangeError
 	}
 
 	app.port = port
@@ -54,12 +61,11 @@ func (app *App) Run() error {
 
 	portListner := fmt.Sprintf(":%d", app.port)
 
-	err := app.router.Run(portListner)
-	if err != nil {
+	if err := app.router.Run(portListner); err != nil {
 		return err
 	}
 
-	fmt.Println("Server started on port", portListner)
-	err = http.ListenAndServe(portListner, nil)
-	return err
+	log.Println("Server started on port", portListner)
+
+	return http.ListenAndServe(portListner, nil)
 }

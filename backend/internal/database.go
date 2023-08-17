@@ -28,11 +28,9 @@ type DBClient struct {
 func (client *DBClient) connectDatabase(path string) error {
 	var err error
 
-	if client.db, err = sql.Open("sqlite3", path); err != nil {
-		return err
-	}
+	client.db, err = sql.Open("sqlite3", path)
 
-	return client.createTable()
+	return err
 }
 
 func (client *DBClient) createTable() error {
