@@ -14,8 +14,8 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// OutOfRangeError if user enter invalid port
-var OutOfRangeError = errors.New("port number out of range, range should be between [1, 65535]")
+// ErrOutOfRange if user enter invalid port
+var ErrOutOfRange = errors.New("port number out of range, range should be between [1, 65535]")
 
 type App struct {
 	router *gin.Engine
@@ -38,7 +38,7 @@ func NewApp(databasePath string, port int) (*App, error) {
 	}
 
 	if port < 1 || port > 65535 {
-		return nil, OutOfRangeError
+		return nil, ErrOutOfRange
 	}
 
 	app.port = port
