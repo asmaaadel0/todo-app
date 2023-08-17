@@ -28,6 +28,7 @@ func TestGetTasks(t *testing.T) {
 		title := "New Task"
 		completed := true
 		_, err = app.client.addTaskDB(title, completed)
+		assert.Nil(t, err)
 
 		recorder := httptest.NewRecorder()
 
@@ -75,6 +76,7 @@ func TestAddTask(t *testing.T) {
 
 		var id int
 		err = json.Unmarshal(recorder.Body.Bytes(), &id)
+		assert.Nil(t, err)
 
 		assert.Equal(t, id, 2, "id is wrong")
 	})
