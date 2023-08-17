@@ -25,6 +25,10 @@ func TestGetTasks(t *testing.T) {
 		req, err := http.NewRequest("GET", "/tasks", nil)
 		assert.Nil(t, err)
 
+		title := "New Task"
+		completed := true
+		_, err = app.client.addTaskDB(title, completed)
+
 		recorder := httptest.NewRecorder()
 
 		router.ServeHTTP(recorder, req)
@@ -35,6 +39,10 @@ func TestGetTasks(t *testing.T) {
 		err = json.Unmarshal(recorder.Body.Bytes(), &tasks)
 
 		assert.Nil(t, err)
+
+		assert.Equal(t, tasks[0].Title, title, "title is wrong")
+
+		assert.Equal(t, tasks[0].Completed, completed, "completed status is wrong")
 	})
 }
 
@@ -64,6 +72,11 @@ func TestAddTask(t *testing.T) {
 		router.ServeHTTP(recorder, req)
 
 		assert.Equal(t, http.StatusCreated, recorder.Code, "failed in response code")
+
+		var id int
+		err = json.Unmarshal(recorder.Body.Bytes(), &id)
+
+		assert.Equal(t, id, 2, "id is wrong")
 	})
 }
 
