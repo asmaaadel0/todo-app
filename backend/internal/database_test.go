@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"path"
 	"regexp"
 	"testing"
 
@@ -17,7 +18,9 @@ func TestConnectDatabase(t *testing.T) {
 
 		app := &App{client: DBClient{db: client}}
 
-		err = app.client.connectDatabase("memory")
+		tempDir := t.TempDir()
+
+		err = app.client.connectDatabase(path.Join(tempDir, "memory"))
 		if err != nil {
 			t.Fatalf("Failed to connect to the database: %v", err)
 		}

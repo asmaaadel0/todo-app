@@ -1,5 +1,4 @@
 /backend/database.db
-/backend/internal/memory
 
 .env.development
 
