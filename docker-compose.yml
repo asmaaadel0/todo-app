@@ -1,0 +1,24 @@
+version: "3"
+services:
+  frontend:
+    image: node:14
+    container_name: frontend-app
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "8080:8080"
+    command: npm run serve
+
+  backend:
+    image: backend-app:latest
+    container_name: backend-app
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/app
+    ports:
+      - "3000:3000"
