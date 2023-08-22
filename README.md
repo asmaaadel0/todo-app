@@ -1,13 +1,12 @@
 # Todo App
 
-- [Todo App](#todo-app)
-  - [About ](#about-)
-  - [Website Features ](#website-features-)
-  - [Technologies Used ](#technologies-used-)
-  - [How to Use ](#how-to-use-)
-  - [How to Run using docker-compose ](#how-to-run-using-docker-compose-)
-  - [API Documentation ](#api-documentation-)
-  - [End-to-End Tests ](#end-to-end-tests-)
+- [About ](#about-)
+- [Website Features ](#website-features-)
+- [Technologies Used ](#technologies-used-)
+- [How to Use ](#how-to-use-)
+- [How to Run using docker-compose ](#how-to-run-using-docker-compose-)
+- [API Documentation ](#api-documentation-)
+- [End-to-End Tests ](#end-to-end-tests-)
 
 ## About <a name = "about"></a>
 
